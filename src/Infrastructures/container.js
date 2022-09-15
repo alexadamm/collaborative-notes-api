@@ -1,4 +1,6 @@
 const { createContainer } = require('instances-container');
+const argon2 = require('argon2');
+
 const PasswordHasher = require('../Applications/securities/PasswordHasher');
 const UsersService = require('../Domains/users/UsersService');
 const AddUserUseCase = require('../Applications/use_cases/AddUserUseCase');
@@ -15,8 +17,14 @@ container.register([
   },
   {
     key: PasswordHasher.name,
-    Class: {},
-    parameter: {},
+    Class: PasswordhHasherArgon,
+    parameter: {
+      dependencies: [
+        {
+          concrete: argon2,
+        },
+      ],
+    },
   },
 ]);
 

@@ -3,7 +3,7 @@ class UsersService {
     throw new Error('USERS_SERVICE.METHOD_NOT_IMPLEMENTED');
   }
 
-  async createUser(addUser) {
+  async addUser(addUser) {
     throw new Error('USERS_SERVICE.METHOD_NOT_IMPLEMENTED');
   }
 

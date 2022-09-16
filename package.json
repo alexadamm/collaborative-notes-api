@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "test:watch": "jest --watchAll --coverage --setupFiles dotenv/config -i"
+    "test:watch": "jest --watchAll --coverage --setupFiles dotenv/config -i",
+    "start": "node src/app.js",
+    "start:dev": "nodemon src/app.js"
   },
   "author": "",
   "license": "ISC",
@@ -24,6 +26,9 @@
     "@nestjs/core": "^9.0.11",
     "@prisma/client": "^4.3.1",
     "argon2": "^0.29.1",
+    "dotenv": "^16.0.2",
+    "express": "^4.18.1",
+    "helmet": "^6.0.0",
     "instances-container": "^2.0.6",
     "reflect-metadata": "^0.1.13"
   }

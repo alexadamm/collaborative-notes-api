@@ -8,13 +8,9 @@ class AddUserUseCase {
 
   async execute(payload) {
     const addUser = new AddUser(payload);
-    const { username, password, fullname } = addUser;
-
-    const encryptedPassword = await this.passwordHasher.hash(password);
-    const id = await this.usersService
-      .addUser({ username, password: encryptedPassword, fullname });
-
-    return id;
+    await this.usersService.verifyAvailableUsername(addUser.username);
+    addUser.password = await this.passwordHasher.hash(addUser.password);
+    return this.usersService.addUser(addUser);
   }
 }
 

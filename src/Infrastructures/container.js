@@ -4,6 +4,9 @@ const argon2 = require('argon2');
 const PasswordHasher = require('../Applications/securities/PasswordHasher');
 const UsersService = require('../Domains/users/UsersService');
 const AddUserUseCase = require('../Applications/use_cases/AddUserUseCase');
+const UsersServicePrisma = require('./services/UsersServicePrisma');
+const pool = require('./database/postgres/pool');
+const PasswordhHasherArgon = require('./securities/PasswordHasherArgon');
 
 // creating container
 const container = createContainer();
@@ -12,8 +15,14 @@ const container = createContainer();
 container.register([
   {
     key: UsersService.name,
-    Class: {},
-    parameter: {},
+    Class: UsersServicePrisma,
+    parameter: {
+      dependencies: [
+        {
+          concrete: pool,
+        },
+      ],
+    },
   },
   {
     key: PasswordHasher.name,

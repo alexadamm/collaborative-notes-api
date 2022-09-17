@@ -14,6 +14,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/users', userRouter);
 
 // Error handler
+app.use((req, res) => {
+  res.status(404).send({
+    message: 'Page not found',
+  });
+});
+
 app.use((err, req, res, next) => {
   if (err instanceof ClientError) {
     res.status(err.statusCode).send({

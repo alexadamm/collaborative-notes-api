@@ -1,6 +1,7 @@
 const AddedUser = require('../../../Domains/users/entities/AddedUser');
 const AddUser = require('../../../Domains/users/entities/AddUser');
 const UsersService = require('../../../Domains/users/UsersService');
+const UsersValidator = require('../../../Infrastructures/validator/users');
 const PasswordHasher = require('../../securities/PasswordHasher');
 const AddUserUseCase = require('../AddUserUseCase');
 
@@ -19,9 +20,12 @@ describe('AddUserUseCase', () => {
       username: 'johndoe',
     });
 
+    const mockUsersValidator = UsersValidator;
     const mockUsersService = new UsersService();
     const mockPasswordHasher = new PasswordHasher();
 
+    mockUsersValidator.validatePostUserPayload = jest.fn()
+      .mockImplementation(() => Promise.resolve());
     mockUsersService.verifyAvailableUsername = jest.fn()
       .mockImplementation(() => Promise.resolve());
     mockPasswordHasher.hash = jest.fn()
@@ -30,6 +34,7 @@ describe('AddUserUseCase', () => {
       .mockImplementation(() => Promise.resolve(expectedAddedUser));
 
     const addUserUseCase = new AddUserUseCase({
+      usersValidator: mockUsersValidator,
       usersService: mockUsersService,
       passwordHasher: mockPasswordHasher,
     });
@@ -39,6 +44,7 @@ describe('AddUserUseCase', () => {
 
     // Assert
     expect(addedUser).toStrictEqual(expectedAddedUser);
+    expect(mockUsersValidator.validatePostUserPayload).toBeCalledWith(useCasePayload);
     expect(mockUsersService.verifyAvailableUsername).toBeCalledWith(useCasePayload.username);
     expect(mockPasswordHasher.hash).toBeCalledWith(useCasePayload.password);
     expect(mockUsersService.addUser).toBeCalledWith(new AddUser({

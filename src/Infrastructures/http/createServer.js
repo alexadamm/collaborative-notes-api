@@ -31,8 +31,6 @@ const createServer = async (container) => {
         isSuccess: false,
         message: 'an error occured on our server',
       });
-
-      console.error(err);
     }
     // eslint-disable-next-line no-useless-return
     return;

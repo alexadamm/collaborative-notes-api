@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 const { PrismaClient } = require('@prisma/client');
 
 const pool = new PrismaClient({

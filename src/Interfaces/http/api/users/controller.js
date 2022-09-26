@@ -1,11 +1,17 @@
 const AddUserUseCase = require('../../../../Applications/use_cases/AddUserUseCase');
-const container = require('../../../../Infrastructures/container');
+const GetUsersByUsernameUseCase = require('../../../../Applications/use_cases/GetUsersByUsernameUseCase');
 
 class UsersController {
+  constructor(container) {
+    this._container = container;
+
+    this.postUserController = this.postUserController.bind(this);
+  }
+
   async postUserController(req, res, next) {
     try {
       const payload = req.body;
-      const addUserUseCase = container.getInstance(AddUserUseCase.name);
+      const addUserUseCase = this._container.getInstance(AddUserUseCase.name);
       const user = await addUserUseCase.execute(payload);
 
       res.status(201).json({

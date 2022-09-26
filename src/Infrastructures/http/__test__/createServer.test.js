@@ -1,9 +1,12 @@
 const request = require('supertest');
-const app = require('../createServer');
+const createServer = require('../createServer');
 
 describe('HTTP server', () => {
   it('should response 404 when request to unregistered route', async () => {
-    // Arrange & Action
+    // Arrange
+    const app = await createServer({});
+
+    // Action
     const response = await request(app).get('/unregisteredRoute');
 
     // Assert

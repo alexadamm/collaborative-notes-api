@@ -49,7 +49,7 @@ describe('PasswordHasherArgon', () => {
       // Action and Assert
       expect(passwordHasherArgon.compare(password, encryptedPassword))
         .resolves.not.toThrowError(AuthenticationError);
-      expect(spyHash).toBeCalledWith(encryptedPassword, password, { salt });
+      expect(await passwordHasherArgon.compare(password, encryptedPassword)).toEqual(undefined);
     });
   });
 });

@@ -131,4 +131,48 @@ describe('/users endpoint', () => {
       expect(response.body.isSuccess).toEqual(false);
     });
   });
+
+  describe('when GET /users', () => {
+    it('should response 200 and array of users', async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({ username: 'johndoe' });
+      const app = await createServer(container);
+
+      // Action
+      const response = await request(app).get('/users');
+
+      // Assert
+      expect(response.statusCode).toEqual(200);
+      expect(response.body.data).toHaveLength(1);
+    });
+  });
+
+  describe('when GET /users/{userId}', () => {
+    it('should response 404 when user is not found', async () => {
+      // Arrange
+      const userId = '12345678-abcd-abcd-abcd-123456789012';
+      const app = await createServer(container);
+
+      // Action
+      const response = await request(app).get(`/users/${userId}`);
+
+      // Assert
+      expect(response.statusCode).toEqual(404);
+      expect(response.body.message).toEqual('User not found');
+    });
+
+    it('should response 200 and user data', async () => {
+      // Arrange
+      const userId = '12345678-abcd-abcd-abcd-123456789012';
+      await UsersTableTestHelper.addUser({ id: userId, username: 'johndoe' });
+      const app = await createServer(container);
+
+      // Action
+      const response = await request(app).get(`/users/${userId}`);
+
+      // Assert
+      expect(response.statusCode).toEqual(200);
+      expect(response.body.data.id).toEqual(userId);
+    });
+  });
 });

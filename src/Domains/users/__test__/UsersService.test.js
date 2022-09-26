@@ -8,7 +8,7 @@ describe('UsersService interface', () => {
     // Action and Assert
     expect(usersService.verifyAvailableUsername('')).rejects.toThrowError('USERS_SERVICE.METHOD_NOT_IMPLEMENTED');
     expect(usersService.addUser({})).rejects.toThrowError('USERS_SERVICE.METHOD_NOT_IMPLEMENTED');
-    expect(usersService.readUsers()).rejects.toThrowError('USERS_SERVICE.METHOD_NOT_IMPLEMENTED');
-    expect(usersService.readUserById('')).rejects.toThrowError('USERS_SERVICE.METHOD_NOT_IMPLEMENTED');
+    expect(usersService.getUsersByUsername('username')).rejects.toThrowError('USERS_SERVICE.METHOD_NOT_IMPLEMENTED');
+    expect(usersService.getUserById('id')).rejects.toThrowError('USERS_SERVICE.METHOD_NOT_IMPLEMENTED');
   });
 });

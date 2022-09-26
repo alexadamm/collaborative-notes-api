@@ -54,4 +54,17 @@ describe('User requests validator', () => {
         .toThrowError(InvariantError);
     });
   });
+
+  describe('get user by id request params', () => {
+    it('should throw error when params did not meet data type specification', () => {
+      // Arrange
+      const params = {
+        userId: 123,
+      };
+
+      // Action and Assert
+      expect(() => UsersValidator.validateGetUserByIdParams(params))
+        .toThrowError(InvariantError);
+    });
+  });
 });

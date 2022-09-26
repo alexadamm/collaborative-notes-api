@@ -2,12 +2,14 @@ const { Router } = require('express');
 const UsersController = require('./controller');
 
 const users = (container) => {
-  const userRouter = Router();
+  const usersRouter = Router();
   const usersController = new UsersController(container);
 
-  userRouter.post('/', usersController.postUserController);
+  usersRouter.post('/', usersController.postUserController);
+  usersRouter.get('/', usersController.getUserByUsernameController);
+  usersRouter.get('/:userId', usersController.getUserByUserIdController);
 
-  return userRouter;
+  return usersRouter;
 };
 
 module.exports = users;

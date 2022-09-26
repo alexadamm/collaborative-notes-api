@@ -7,7 +7,9 @@ const AddUserUseCase = require('../Applications/use_cases/AddUserUseCase');
 const UsersServicePrisma = require('./services/UsersServicePrisma');
 const pool = require('./database/postgres/pool');
 const PasswordhHasherArgon = require('./securities/PasswordHasherArgon');
+const GetUsersByUsernameUseCase = require('../Applications/use_cases/GetUsersByUsernameUseCase');
 const UsersValidator = require('./validator/users');
+const GetUserByIdUseCase = require('../Applications/use_cases/GetUserByIdUseCase');
 
 // creating container
 const container = createContainer();
@@ -57,6 +59,36 @@ container.register([
         {
           name: 'passwordHasher',
           internal: PasswordHasher.name,
+        },
+      ],
+    },
+  },
+  {
+    key: GetUsersByUsernameUseCase.name,
+    Class: GetUsersByUsernameUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'usersService',
+          internal: UsersService.name,
+        },
+      ],
+    },
+  },
+  {
+    key: GetUserByIdUseCase.name,
+    Class: GetUserByIdUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'usersValidator',
+          concrete: UsersValidator,
+        },
+        {
+          name: 'usersService',
+          internal: UsersService.name,
         },
       ],
     },

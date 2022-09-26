@@ -6,4 +6,8 @@ const PostUserPayloadSchema = Joi.object({
   fullname: Joi.string().required(),
 });
 
-module.exports = { PostUserPayloadSchema };
+const GetUserByIdParamsSchema = Joi.object({
+  userId: Joi.string().uuid().required(),
+});
+
+module.exports = { PostUserPayloadSchema, GetUserByIdParamsSchema };

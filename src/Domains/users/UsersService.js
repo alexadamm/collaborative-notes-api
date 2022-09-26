@@ -7,11 +7,11 @@ class UsersService {
     throw new Error('USERS_SERVICE.METHOD_NOT_IMPLEMENTED');
   }
 
-  async readUsers() {
+  async getUsersByUsername(username) {
     throw new Error('USERS_SERVICE.METHOD_NOT_IMPLEMENTED');
   }
 
-  async readUserById(userId) {
+  async getUserById(userId) {
     throw new Error('USERS_SERVICE.METHOD_NOT_IMPLEMENTED');
   }
 }

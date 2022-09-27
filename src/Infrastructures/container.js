@@ -1,5 +1,6 @@
 const { createContainer } = require('instances-container');
 const argon2 = require('argon2');
+const jwt = require('jsonwebtoken');
 
 const PasswordHasher = require('../Applications/securities/PasswordHasher');
 const UsersService = require('../Domains/users/UsersService');
@@ -10,11 +11,13 @@ const PasswordhHasherArgon = require('./securities/PasswordHasherArgon');
 const GetUsersByUsernameUseCase = require('../Applications/use_cases/GetUsersByUsernameUseCase');
 const UsersValidator = require('./validator/users');
 const GetUserByIdUseCase = require('../Applications/use_cases/GetUserByIdUseCase');
+const AuthenticationTokenManager = require('../Applications/securities/AuthenticationTokenManager');
+const AuthenticationTokenManagerJwt = require('./securities/AuthenticationTokenManagerJwt');
 
 // creating container
 const container = createContainer();
 
-// registering services and repositories
+// registering services
 container.register([
   {
     key: UsersService.name,
@@ -34,6 +37,17 @@ container.register([
       dependencies: [
         {
           concrete: argon2,
+        },
+      ],
+    },
+  },
+  {
+    key: AuthenticationTokenManager.name,
+    Class: AuthenticationTokenManagerJwt,
+    parameter: {
+      dependencies: [
+        {
+          concrete: jwt,
         },
       ],
     },

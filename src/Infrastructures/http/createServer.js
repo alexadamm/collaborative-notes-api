@@ -22,18 +22,15 @@ const createServer = async (container) => {
 
   app.use((err, req, res, next) => {
     if (err instanceof ClientError) {
-      res.status(err.statusCode).send({
+      return res.status(err.statusCode).send({
         isSuccess: false,
         message: err.message,
       });
-    } else {
-      res.status(500).send({
-        isSuccess: false,
-        message: 'an error occured on our server',
-      });
     }
-    // eslint-disable-next-line no-useless-return
-    return;
+    return res.status(500).send({
+      isSuccess: false,
+      message: 'an error occured on our server',
+    });
   });
 
   return app;

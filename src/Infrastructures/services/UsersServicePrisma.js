@@ -11,7 +11,7 @@ class UsersServicePrisma extends UsersService {
 
   async verifyAvailableUsername(username) {
     const result = await this._pool.users
-      .findUnique({ where: { username } });
+      .findUnique({ where: { username }, select: { id: true } });
 
     if (result) {
       throw new InvariantError('Username is already taken.');
@@ -19,31 +19,34 @@ class UsersServicePrisma extends UsersService {
   }
 
   async addUser(newUser) {
-    const { id, username, fullname } = await this._pool.users
-      .create({ data: newUser });
+    const user = await this._pool.users
+      .create({ data: newUser, select: { id: true, username: true, fullname: true } });
 
-    return new AddedUser({ id, username, fullname });
+    return new AddedUser(user);
   }
 
   async getUsersByUsername(username) {
-    const results = await this._pool.users
-      .findMany({ where: { username: { contains: username } } });
+    const results = await this._pool.users.findMany({
+      where: { username: { contains: username } },
+      select: { id: true, username: true, fullname: true },
+    });
 
-    return results.map(
-      (user) => new AddedUser({ id: user.id, username: user.username, fullname: user.fullname }),
-    );
+    return results.map((user) => new AddedUser(user));
   }
 
   async getUserById(userId) {
-    const result = await this._pool.users
-      .findUnique({ where: { id: userId } });
+    const result = await this._pool.users.findUnique(
+      {
+        where: { id: userId },
+        select: { id: true, username: true, fullname: true },
+      },
+    );
 
     if (!result) {
       throw new NotFoundError('User not found');
     }
 
-    const { id, username, fullname } = result;
-    return new AddedUser({ id, username, fullname });
+    return new AddedUser(result);
   }
 }
 

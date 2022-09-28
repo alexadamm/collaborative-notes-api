@@ -13,3 +13,7 @@ model users {
   password String
   fullname String
 }
+
+model authentications {
+  token String @unique
+}

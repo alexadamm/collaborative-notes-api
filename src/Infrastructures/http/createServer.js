@@ -1,6 +1,7 @@
 const express = require('express');
 const { default: helmet } = require('helmet');
 const ClientError = require('../../Commons/exceptions/ClientError');
+const authentications = require('../../Interfaces/http/api/authentications/routes');
 
 const users = require('../../Interfaces/http/api/users/routes');
 
@@ -12,6 +13,7 @@ const createServer = async (container) => {
   app.use(express.urlencoded({ extended: true }));
 
   app.use('/users', users(container));
+  app.use('/authentications', authentications(container));
 
   // Error handler
   app.use((req, res) => {

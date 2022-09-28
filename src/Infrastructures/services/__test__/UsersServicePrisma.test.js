@@ -4,6 +4,7 @@ const InvariantError = require('../../../Commons/exceptions/InvariantError');
 const AddedUser = require('../../../Domains/users/entities/AddedUser');
 const pool = require('../../database/postgres/pool');
 const UsersServicePrisma = require('../UsersServicePrisma');
+const AuthenticationError = require('../../../Commons/exceptions/AuthenticationError');
 
 describe('UsersServicePrima', () => {
   afterEach(async () => {
@@ -118,6 +119,57 @@ describe('UsersServicePrima', () => {
         username: 'johndoe',
         fullname: 'John Doe',
       }));
+    });
+  });
+
+  describe('getIdByUsername method', () => {
+    it('should return InvariantError when username does not exist', async () => {
+      // Arrange
+      const username = 'johndoe';
+      const usersServicePrisma = new UsersServicePrisma(pool);
+
+      // Action and Assert
+      await expect(usersServicePrisma.getIdByUsername(username))
+        .rejects.toThrowError(InvariantError);
+    });
+
+    it('should return userId correctly', async () => {
+      // Arrange
+      const username = 'johndoe';
+      const id = '12345678-abcd-abcd-abcd-123456789012';
+      await UsersTableTestHelper.addUser({ id, username });
+      const usersServicePrisma = new UsersServicePrisma(pool);
+
+      // Action
+      const userId = await usersServicePrisma.getIdByUsername(username);
+
+      // Assert
+      expect(userId).toEqual(id);
+    });
+  });
+
+  describe('getPasswordByUsername method', () => {
+    it('should return AuthenticationError when username does not exist', async () => {
+      // Arrange
+      const username = 'johndoe';
+      const usersServicePrisma = new UsersServicePrisma(pool);
+
+      // Action and Assert
+      await expect(usersServicePrisma.getPasswordByUsername(username))
+        .rejects.toThrowError(AuthenticationError);
+    });
+    it('should return userPassword correctly', async () => {
+      // Arrange
+      const username = 'johndoe';
+      const password = 'secret';
+      await UsersTableTestHelper.addUser({ username, password });
+      const usersServicePrisma = new UsersServicePrisma(pool);
+
+      // Action
+      const userPassword = await usersServicePrisma.getPasswordByUsername(username);
+
+      // Assert
+      expect(userPassword).toEqual(password);
     });
   });
 });

@@ -13,6 +13,10 @@ const UsersValidator = require('./validator/users');
 const GetUserByIdUseCase = require('../Applications/use_cases/GetUserByIdUseCase');
 const AuthenticationTokenManager = require('../Applications/securities/AuthenticationTokenManager');
 const AuthenticationTokenManagerJwt = require('./securities/AuthenticationTokenManagerJwt');
+const AuthenticationService = require('../Domains/authentications/AuthenticationService');
+const AuthenticationServicePrisma = require('./services/AuthenticationServicePrisma');
+const LoginUserUseCase = require('../Applications/use_cases/LoginUserUseCase');
+const AuthenticationValidator = require('./validator/authentication');
 
 // creating container
 const container = createContainer();
@@ -22,6 +26,18 @@ container.register([
   {
     key: UsersService.name,
     Class: UsersServicePrisma,
+    parameter: {
+      dependencies: [
+        {
+          concrete: pool,
+        },
+      ],
+    },
+  },
+  {
+
+    key: AuthenticationService.name,
+    Class: AuthenticationServicePrisma,
     parameter: {
       dependencies: [
         {
@@ -103,6 +119,35 @@ container.register([
         {
           name: 'usersService',
           internal: UsersService.name,
+        },
+      ],
+    },
+  },
+  {
+    key: LoginUserUseCase.name,
+    Class: LoginUserUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'authenticationsValidator',
+          concrete: AuthenticationValidator,
+        },
+        {
+          name: 'usersService',
+          internal: UsersService.name,
+        },
+        {
+          name: 'passwordHasher',
+          internal: PasswordHasher.name,
+        },
+        {
+          name: 'authenticationTokenManager',
+          internal: AuthenticationTokenManager.name,
+        },
+        {
+          name: 'authenticationService',
+          internal: AuthenticationService.name,
         },
       ],
     },

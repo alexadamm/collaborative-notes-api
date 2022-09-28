@@ -14,6 +14,14 @@ class UsersService {
   async getUserById(userId) {
     throw new Error('USERS_SERVICE.METHOD_NOT_IMPLEMENTED');
   }
+
+  async getIdByUsername(username) {
+    throw new Error('USERS_SERVICE.METHOD_NOT_IMPLEMENTED');
+  }
+
+  async getPasswordByUsername(username) {
+    throw new Error('USERS_SERVICE.METHOD_NOT_IMPLEMENTED');
+  }
 }
 
 module.exports = UsersService;

@@ -2,6 +2,7 @@ const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 const InvariantError = require('../../Commons/exceptions/InvariantError');
 const AddedUser = require('../../Domains/users/entities/AddedUser');
 const UsersService = require('../../Domains/users/UsersService');
+const AuthenticationError = require('../../Commons/exceptions/AuthenticationError');
 
 class UsersServicePrisma extends UsersService {
   constructor(pool) {
@@ -47,6 +48,32 @@ class UsersServicePrisma extends UsersService {
     }
 
     return new AddedUser(result);
+  }
+
+  async getIdByUsername(username) {
+    const user = await this._pool.users.findUnique({
+      where: { username },
+      select: { id: true },
+    });
+
+    if (!user) {
+      throw new InvariantError('User does not exist');
+    }
+
+    return user.id;
+  }
+
+  async getPasswordByUsername(username) {
+    const user = await this._pool.users.findUnique({
+      where: { username },
+      select: { password: true },
+    });
+
+    if (!user) {
+      throw new AuthenticationError('Wrong credentials. Invalid username or password');
+    }
+
+    return user.password;
   }
 }
 

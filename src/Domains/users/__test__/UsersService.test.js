@@ -10,5 +10,7 @@ describe('UsersService interface', () => {
     expect(usersService.addUser({})).rejects.toThrowError('USERS_SERVICE.METHOD_NOT_IMPLEMENTED');
     expect(usersService.getUsersByUsername('username')).rejects.toThrowError('USERS_SERVICE.METHOD_NOT_IMPLEMENTED');
     expect(usersService.getUserById('id')).rejects.toThrowError('USERS_SERVICE.METHOD_NOT_IMPLEMENTED');
+    expect(usersService.getIdByUsername('')).rejects.toThrowError('USERS_SERVICE.METHOD_NOT_IMPLEMENTED');
+    expect(usersService.getPasswordByUsername()).rejects.toThrowError('USERS_SERVICE.METHOD_NOT_IMPLEMENTED');
   });
 });

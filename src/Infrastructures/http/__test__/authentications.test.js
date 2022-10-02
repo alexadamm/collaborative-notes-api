@@ -54,4 +54,46 @@ describe('/authentications endpoint', () => {
       expect(response.body.message).toEqual('Wrong credentials. Invalid username or password');
     });
   });
+
+  describe('when DELETE /authentications', () => {
+    it('should response 200 if refresh token valid', async () => {
+      // Arrange
+      const app = await createServer(container);
+      const refreshToken = 'refresh_token';
+      await AuthenticationsTableTestHelper.addToken(refreshToken);
+
+      // Action
+      const response = await request(app).delete('/authentications').send({ refreshToken });
+
+      // Assert
+      expect(response.statusCode).toEqual(200);
+      expect(response.body.isSuccess).toEqual(true);
+    });
+
+    it('should response 404 if refresh token not registered in database', async () => {
+      // Arrange
+      const app = await createServer(container);
+      const refreshToken = 'refresh_token';
+
+      const response = await request(app).delete('/authentications').send({ refreshToken });
+
+      // Assert
+      expect(response.statusCode).toEqual(404);
+      expect(response.body.isSuccess).toEqual(false);
+      expect(response.body.message).toEqual('Refresh token is not found');
+    });
+
+    it('should response 400 if payload did not contain refresh token', async () => {
+      // Arrange
+      const app = await createServer(container);
+
+      // Action
+      const response = await request(app).delete('/authentications').send({});
+
+      // Assert
+      expect(response.statusCode).toEqual(400);
+      expect(response.body.isSuccess).toEqual(false);
+      expect(response.body.message).toEqual('"refreshToken" is required');
+    });
+  });
 });

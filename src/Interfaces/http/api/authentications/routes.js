@@ -6,6 +6,7 @@ const authentications = (container) => {
   const authenticationsController = new AuthenticationsController(container);
 
   authenticationsRouter.post('/', authenticationsController.postAuthenticationController);
+  authenticationsRouter.delete('/', authenticationsController.deleteAuthenticationController);
 
   return authenticationsRouter;
 };

@@ -6,6 +6,10 @@ const AuthenticationsTableTestHelper = {
     return pool.authentications.findUnique({ where: { token } });
   },
 
+  async addToken(token) {
+    return pool.authentications.create({ data: { token } });
+  },
+
   async cleanTable() {
     await pool.authentications.deleteMany();
   },

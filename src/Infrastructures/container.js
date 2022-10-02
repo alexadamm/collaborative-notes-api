@@ -17,6 +17,7 @@ const AuthenticationService = require('../Domains/authentications/Authentication
 const AuthenticationServicePrisma = require('./services/AuthenticationServicePrisma');
 const LoginUserUseCase = require('../Applications/use_cases/LoginUserUseCase');
 const AuthenticationValidator = require('./validator/authentication');
+const LogoutUserUseCase = require('../Applications/use_cases/LogoutUserUseCase');
 
 // creating container
 const container = createContainer();
@@ -144,6 +145,23 @@ container.register([
         {
           name: 'authenticationTokenManager',
           internal: AuthenticationTokenManager.name,
+        },
+        {
+          name: 'authenticationService',
+          internal: AuthenticationService.name,
+        },
+      ],
+    },
+  },
+  {
+    key: LogoutUserUseCase.name,
+    Class: LogoutUserUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'authenticationValidator',
+          concrete: AuthenticationValidator,
         },
         {
           name: 'authenticationService',

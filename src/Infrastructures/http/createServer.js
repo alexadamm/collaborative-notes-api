@@ -18,7 +18,9 @@ const createServer = async (container) => {
   // Error handler
   app.use((req, res) => {
     res.status(404).send({
-      message: 'Page not found',
+      isSuccess: false,
+      status: 'NOT_FOUND',
+      errors: { message: 'Page not found' },
     });
   });
 
@@ -26,12 +28,14 @@ const createServer = async (container) => {
     if (err instanceof ClientError) {
       return res.status(err.statusCode).send({
         isSuccess: false,
-        message: err.message,
+        status: err.status,
+        errors: err.errors,
       });
     }
     return res.status(500).send({
       isSuccess: false,
-      message: 'an error occured on our server',
+      status: 'INTERNAL_SERVER_ERROR',
+      errors: { message: 'an error occured on our server' },
     });
   });
 

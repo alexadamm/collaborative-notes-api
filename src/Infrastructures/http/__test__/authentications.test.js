@@ -51,7 +51,7 @@ describe('/authentications endpoint', () => {
       // Assert
       expect(response.statusCode).toEqual(401);
       expect(response.body.isSuccess).toEqual(false);
-      expect(response.body.message).toEqual('Wrong credentials. Invalid username or password');
+      expect(response.body.errors.message).toEqual('Wrong credentials. Invalid username or password');
     });
   });
 
@@ -80,7 +80,7 @@ describe('/authentications endpoint', () => {
       // Assert
       expect(response.statusCode).toEqual(404);
       expect(response.body.isSuccess).toEqual(false);
-      expect(response.body.message).toEqual('Refresh token is not found');
+      expect(response.body.errors.token).toEqual('Refresh token is not found');
     });
 
     it('should response 400 if payload did not contain refresh token', async () => {
@@ -93,7 +93,7 @@ describe('/authentications endpoint', () => {
       // Assert
       expect(response.statusCode).toEqual(400);
       expect(response.body.isSuccess).toEqual(false);
-      expect(response.body.message).toEqual('"refreshToken" is required');
+      expect(response.body.errors.refreshToken[0]).toEqual('"refreshToken" is required');
     });
   });
 });

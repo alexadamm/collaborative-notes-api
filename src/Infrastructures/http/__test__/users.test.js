@@ -58,7 +58,7 @@ describe('/users endpoint', () => {
 
       expect(response.statusCode).toEqual(400);
       expect(response.body.isSuccess).toEqual(false);
-      expect(response.body.message).toEqual('Username is already taken.');
+      expect(response.body.errors.username).toEqual('Username is already taken');
     });
 
     it('should response 400 when request payload not contain needed property', async () => {
@@ -75,14 +75,16 @@ describe('/users endpoint', () => {
       // Assert
       expect(response.statusCode).toEqual(400);
       expect(response.body.isSuccess).toEqual(false);
+      expect(response.body.errors.fullname[0]).toEqual('"fullname" is required');
+      expect(response.body.errors.password[0]).toEqual('"password" is required');
     });
 
     it('should response 400 when request payload not meet data type specification', async () => {
       // Arrange
       const payload = {
         username: 123,
-        password: 'secret',
-        fullname: 'John Doe',
+        password: {},
+        fullname: true,
       };
 
       const app = await createServer(container);
@@ -93,6 +95,9 @@ describe('/users endpoint', () => {
       // Assert
       expect(response.statusCode).toEqual(400);
       expect(response.body.isSuccess).toEqual(false);
+      expect(response.body.errors.username[0]).toEqual('"username" must be a string');
+      expect(response.body.errors.fullname[0]).toEqual('"fullname" must be a string');
+      expect(response.body.errors.password[0]).toEqual('"password" must be a string');
     });
 
     it('should response 400 when username more than 50 characters', async () => {
@@ -111,6 +116,8 @@ describe('/users endpoint', () => {
       // Assert
       expect(response.statusCode).toEqual(400);
       expect(response.body.isSuccess).toEqual(false);
+      expect(response.body.errors.username[0])
+        .toEqual('"username" length must be less than or equal to 50 characters long');
     });
 
     it('should response 400 when username contain restricted character', async () => {
@@ -129,6 +136,8 @@ describe('/users endpoint', () => {
       // Assert
       expect(response.statusCode).toEqual(400);
       expect(response.body.isSuccess).toEqual(false);
+      expect(response.body.errors.username[0])
+        .toEqual('"username" with value "johndoe!" fails to match the required pattern: /^[\\w]+$/');
     });
   });
 
@@ -158,7 +167,7 @@ describe('/users endpoint', () => {
 
       // Assert
       expect(response.statusCode).toEqual(404);
-      expect(response.body.message).toEqual('User not found');
+      expect(response.body.errors.id).toEqual('User not found');
     });
 
     it('should response 200 and user data', async () => {

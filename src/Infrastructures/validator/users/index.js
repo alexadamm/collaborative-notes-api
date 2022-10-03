@@ -1,12 +1,12 @@
-const InvariantError = require('../../../Commons/exceptions/InvariantError');
+const ValidationErrorHandler = require('../../../Commons/exceptions/ValidationErrorHandler');
 const { PostUserPayloadSchema, GetUserByIdParamsSchema } = require('./schema');
 
 const UsersValidator = {
   validatePostUserPayload: (payload) => {
-    const validationResult = PostUserPayloadSchema.validate(payload);
+    const validationResult = PostUserPayloadSchema.validate(payload, { abortEarly: false });
 
     if (validationResult.error) {
-      throw new InvariantError(validationResult.error.message);
+      ValidationErrorHandler(validationResult);
     }
   },
 
@@ -14,7 +14,7 @@ const UsersValidator = {
     const validationResult = GetUserByIdParamsSchema.validate(params);
 
     if (validationResult.error) {
-      throw new InvariantError(validationResult.error.message);
+      ValidationErrorHandler(validationResult);
     }
   },
 };

@@ -11,7 +11,7 @@ describe('HTTP server', () => {
 
     // Assert
     expect(response.statusCode).toEqual(404);
-    expect(response.body.message).toEqual('Page not found');
+    expect(response.body.errors.message).toEqual('Page not found');
   });
 
   it('should handle server error correctly', async () => {
@@ -23,6 +23,6 @@ describe('HTTP server', () => {
 
     expect(response.statusCode).toEqual(500);
     expect(response.body.isSuccess).toEqual(false);
-    expect(response.body.message).toEqual('an error occured on our server');
+    expect(response.body.errors.message).toEqual('an error occured on our server');
   });
 });

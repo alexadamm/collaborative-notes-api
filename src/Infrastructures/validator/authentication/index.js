@@ -1,4 +1,4 @@
-const InvariantError = require('../../../Commons/exceptions/InvariantError');
+const ValidationErrorHandler = require('../../../Commons/exceptions/ValidationErrorHandler');
 const { PostAuthenticationSchema, DeleteAuthenticationSchema } = require('./schema');
 
 const AuthenticationValidator = {
@@ -6,7 +6,7 @@ const AuthenticationValidator = {
     const validationResult = PostAuthenticationSchema.validate(payload);
 
     if (validationResult.error) {
-      throw new InvariantError(validationResult.error.message);
+      ValidationErrorHandler(validationResult);
     }
   },
 
@@ -14,7 +14,7 @@ const AuthenticationValidator = {
     const validationResult = DeleteAuthenticationSchema.validate(payload);
 
     if (validationResult.error) {
-      throw new InvariantError(validationResult.error.message);
+      ValidationErrorHandler(validationResult);
     }
   },
 };

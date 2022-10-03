@@ -1,6 +1,6 @@
 class ClientError extends Error {
-  constructor(message, statusCode = 400) {
-    super(message);
+  constructor(errors, statusCode = 400) {
+    super();
 
     if (this.constructor.name === 'ClientError') {
       throw new Error('Cannot instantiate abstract class');
@@ -8,6 +8,8 @@ class ClientError extends Error {
 
     this.statusCode = statusCode;
     this.name = 'ClientError';
+    this.status = 'CLIENT_ERROR';
+    this.errors = errors;
   }
 }
 

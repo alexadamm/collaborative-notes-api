@@ -18,6 +18,10 @@ const AuthenticationServicePrisma = require('./services/AuthenticationServicePri
 const LoginUserUseCase = require('../Applications/use_cases/LoginUserUseCase');
 const AuthenticationValidator = require('./validator/authentication');
 const LogoutUserUseCase = require('../Applications/use_cases/LogoutUserUseCase');
+const NotesService = require('../Domains/notes/NotesService');
+const NotesServicePrisma = require('./services/NotesServicePrisma');
+const AddNoteUseCase = require('../Applications/use_cases/AddNoteUseCase');
+const NotesValidator = require('./validator/notes');
 
 // creating container
 const container = createContainer();
@@ -39,6 +43,17 @@ container.register([
 
     key: AuthenticationService.name,
     Class: AuthenticationServicePrisma,
+    parameter: {
+      dependencies: [
+        {
+          concrete: pool,
+        },
+      ],
+    },
+  },
+  {
+    key: NotesService.name,
+    Class: NotesServicePrisma,
     parameter: {
       dependencies: [
         {
@@ -166,6 +181,31 @@ container.register([
         {
           name: 'authenticationService',
           internal: AuthenticationService.name,
+        },
+      ],
+    },
+  },
+  {
+    key: AddNoteUseCase.name,
+    Class: AddNoteUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'authenticationTokenManager',
+          internal: AuthenticationTokenManager.name,
+        },
+        {
+          name: 'usersService',
+          internal: UsersService.name,
+        },
+        {
+          name: 'notesValidator',
+          concrete: NotesValidator,
+        },
+        {
+          name: 'notesService',
+          internal: NotesService.name,
         },
       ],
     },

@@ -25,4 +25,28 @@ describe('HTTP server', () => {
     expect(response.body.isSuccess).toEqual(false);
     expect(response.body.errors.message).toEqual('an error occured on our server');
   });
+
+  it('should throw AuthenticationError when no token is provided', async () => {
+    // Arrange
+    const app = await createServer({});
+
+    // Action
+    const response = await request(app).post('/notes');
+
+    // Assert
+    expect(response.statusCode).toEqual(401);
+    expect(response.body.isSuccess).toEqual(false);
+    expect(response.body.errors.message).toEqual('No token provided');
+  });
+
+  it('should not throw AuthenticationError when token is provided', async () => {
+    // Arrange
+    const app = await createServer({});
+
+    // Action
+    const response = await request(app).post('/notes').set('Authorization', 'Bearer token');
+
+    // Assert
+    expect(response.statusCode).not.toEqual(401);
+  });
 });

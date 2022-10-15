@@ -4,6 +4,7 @@ const authentications = require('../../Interfaces/http/api/authentications/route
 
 const users = require('../../Interfaces/http/api/users/routes');
 const ServerMiddlewares = require('./middlewares');
+const notes = require('../../Interfaces/http/api/notes/routes');
 
 const createServer = async (container) => {
   const app = express();
@@ -14,6 +15,7 @@ const createServer = async (container) => {
 
   app.use('/users', users(container));
   app.use('/authentications', authentications(container));
+  app.use('/notes', notes(container));
 
   app.use(ServerMiddlewares.unregisteredRouteHandler);
 

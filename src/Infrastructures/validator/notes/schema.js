@@ -5,4 +5,8 @@ const PostNotePayloadSchema = Joi.object({
   content: Joi.string(),
 });
 
-module.exports = { PostNotePayloadSchema };
+const GetNoteByIdParamsSchema = Joi.object({
+  noteId: Joi.string().uuid().required(),
+});
+
+module.exports = { PostNotePayloadSchema, GetNoteByIdParamsSchema };

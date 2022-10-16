@@ -7,6 +7,8 @@ const notes = (container) => {
   const notesController = new NotesController(container);
 
   notesRouter.post('/', ServerMiddlewares.authenticationHandler, notesController.postNoteController);
+  notesRouter.get('/', ServerMiddlewares.authenticationHandler, notesController.getNotesController);
+  notesRouter.get('/:noteId/', ServerMiddlewares.authenticationHandler, notesController.getNoteByIdController);
 
   return notesRouter;
 };

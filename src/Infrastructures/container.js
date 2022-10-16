@@ -22,6 +22,8 @@ const NotesService = require('../Domains/notes/NotesService');
 const NotesServicePrisma = require('./services/NotesServicePrisma');
 const AddNoteUseCase = require('../Applications/use_cases/AddNoteUseCase');
 const NotesValidator = require('./validator/notes');
+const GetNoteByIdUseCase = require('../Applications/use_cases/GetNoteByIdUseCase');
+const GetNotesByUserIdUseCase = require('../Applications/use_cases/GetNotesByUserIdUseCase');
 
 // creating container
 const container = createContainer();
@@ -203,6 +205,36 @@ container.register([
           name: 'notesValidator',
           concrete: NotesValidator,
         },
+        {
+          name: 'notesService',
+          internal: NotesService.name,
+        },
+      ],
+    },
+  },
+  {
+    key: GetNoteByIdUseCase.name,
+    Class: GetNoteByIdUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'notesService',
+          internal: NotesService.name,
+        },
+        {
+          name: 'notesValidator',
+          concrete: NotesValidator,
+        },
+      ],
+    },
+  },
+  {
+    key: GetNotesByUserIdUseCase.name,
+    Class: GetNotesByUserIdUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
         {
           name: 'notesService',
           internal: NotesService.name,

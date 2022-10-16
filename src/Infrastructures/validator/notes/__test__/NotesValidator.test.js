@@ -27,4 +27,17 @@ describe('NotesValidator', () => {
         .not.toThrowError(InvariantError);
     });
   });
+
+  describe('get note by id request params', () => {
+    it('should throw error when params did not meet data type specification', () => {
+      // Arrange
+      const params = {
+        noteId: '123',
+      };
+
+      // Action and Assert
+      expect(() => NotesValidator.validateGetNoteByIdParams(params))
+        .toThrowError(InvariantError);
+    });
+  });
 });

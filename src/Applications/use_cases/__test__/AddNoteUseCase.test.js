@@ -1,5 +1,5 @@
-const AddedNote = require('../../../Domains/notes/entities/AddedNote');
-const AddNote = require('../../../Domains/notes/entities/AddNote');
+const AddedNote = require('../../../Domains/notes/entities/NoteDetail');
+const AddNote = require('../../../Domains/notes/entities/NewNote');
 const NotesService = require('../../../Domains/notes/NotesService');
 const UsersService = require('../../../Domains/users/UsersService');
 const NotesValidator = require('../../../Infrastructures/validator/notes');

@@ -1,7 +1,7 @@
 const NotesTableTestHelper = require('../../../../__test__/NotesTableTestHelper');
 const UsersTableTestHelper = require('../../../../__test__/UsersTableTestHelper');
-const AddedNote = require('../../../Domains/notes/entities/AddedNote');
-const AddNote = require('../../../Domains/notes/entities/AddNote');
+const NoteDetail = require('../../../Domains/notes/entities/NoteDetail');
+const NewNote = require('../../../Domains/notes/entities/NewNote');
 const pool = require('../../database/postgres/pool');
 const NotesServicePrisma = require('../NotesServicePrisma');
 
@@ -18,7 +18,7 @@ describe('NotesServicePrisma', () => {
   describe('addNote method', () => {
     it('should add note to the database', async () => {
       // Arrange
-      const newNote = new AddNote({
+      const newNote = new NewNote({
         ownerId: '12345678-abcd-abcd-abcd-123456789012',
         title: 'A title',
         content: 'lorem ipsum dolor sit amet',
@@ -35,7 +35,7 @@ describe('NotesServicePrisma', () => {
 
     it('should return addedNote correctly', async () => {
       // Arrange
-      const newNote = new AddNote({
+      const newNote = new NewNote({
         ownerId: '12345678-abcd-abcd-abcd-123456789012',
         title: 'A title',
         content: 'lorem ipsum dolor sit amet',
@@ -46,8 +46,8 @@ describe('NotesServicePrisma', () => {
       const addedNote = await notesServicePrisma.addNote(newNote);
 
       // Assert
-      expect(addedNote).toBeInstanceOf(AddedNote);
-      expect(addedNote.ownerId).toEqual(newNote.ownerId);
+      expect(addedNote).toBeInstanceOf(NoteDetail);
+      expect(addedNote.owner).toEqual('johndoe');
       expect(addedNote.title).toEqual(newNote.title);
       expect(addedNote.content).toEqual(newNote.content);
       expect(addedNote.createdAt).toBeDefined();

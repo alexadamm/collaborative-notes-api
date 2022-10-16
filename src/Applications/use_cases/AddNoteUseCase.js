@@ -1,4 +1,4 @@
-const AddNote = require('../../Domains/notes/entities/AddNote');
+const NewNote = require('../../Domains/notes/entities/NewNote');
 
 class AddNoteUseCase {
   constructor({
@@ -10,7 +10,7 @@ class AddNoteUseCase {
 
   async execute(payload, ownerId) {
     this.notesValidator.validatePostNotePayload(payload);
-    const newNote = new AddNote({ ...payload, ownerId });
+    const newNote = new NewNote({ ...payload, ownerId });
     return this.notesService.addNote(newNote);
   }
 }

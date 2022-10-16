@@ -16,7 +16,7 @@ describe('/notes endpoint', () => {
         content: 'new note body',
       };
       const app = await createServer(container);
-      const { userId, accessToken } = await ServerTestHelper.newUser({ request, app }, {});
+      const { accessToken } = await ServerTestHelper.newUser({ request, app }, { username: 'johndoe' });
 
       // Action
       const response = await request(app).post('/notes').send(payload).set('Authorization', `Bearer ${accessToken}`);
@@ -24,13 +24,13 @@ describe('/notes endpoint', () => {
       // Assert
       const responseStatus = response.status;
       const {
-        id, title, content, ownerId, updatedAt, createdAt,
+        id, title, content, owner, updatedAt, createdAt,
       } = response.body.data;
       expect(responseStatus).toEqual(201);
       expect(id).toBeDefined();
       expect(title).toEqual(payload.title);
       expect(content).toEqual(payload.content);
-      expect(ownerId).toEqual(userId);
+      expect(owner).toEqual('johndoe');
       expect(updatedAt).toBeDefined();
       expect(createdAt).toBeDefined();
     });

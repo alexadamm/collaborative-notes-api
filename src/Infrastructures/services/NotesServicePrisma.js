@@ -1,4 +1,4 @@
-const AddedNote = require('../../Domains/notes/entities/AddedNote');
+const NoteDetail = require('../../Domains/notes/entities/NoteDetail');
 const NotesService = require('../../Domains/notes/NotesService');
 
 class NotesServicePrisma extends NotesService {
@@ -8,8 +8,15 @@ class NotesServicePrisma extends NotesService {
   }
 
   async addNote(newNote) {
-    const note = await this._pool.Note.create({ data: newNote });
-    return new AddedNote(note);
+    const note = await this._pool.Note.create({
+      data: newNote,
+      include: {
+        owner: {
+          select: { username: true },
+        },
+      },
+    });
+    return new NoteDetail({ ...note, owner: note.owner.username });
   }
 }
 

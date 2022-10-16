@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const AuthenticationError = require('../../../Commons/exceptions/AuthenticationError');
 const InvariantError = require('../../../Commons/exceptions/InvariantError');
 const AuthenticationTokenManagerJwt = require('../AuthenticationTokenManagerJwt');
 
@@ -67,6 +68,36 @@ describe('AuthenticationTokenManagerJwt', () => {
       // Action and Assert
       await expect(jwtTokenManager.verifyRefreshToken(refreshToken))
         .resolves.not.toThrowError(InvariantError);
+    });
+  });
+
+  describe('verifyAccessToken method', () => {
+    it('should throw AuthenticationError when verification failed', async () => {
+      // Arrange
+      const payload = {
+        username: 'johndoe',
+        password: 'hello',
+      };
+      const jwtTokenManager = new AuthenticationTokenManagerJwt(jwt);
+
+      /** use refreshToken instead of accessToken to make it error */
+      const refreshToken = await jwtTokenManager.createRefreshToken(payload);
+
+      // Action and Assert
+      await expect(jwtTokenManager.verifyAccessToken(refreshToken))
+        .rejects.toThrowError(AuthenticationError);
+    });
+    it('should not throw AuthenticationError when verification success', async () => {
+      // Arrange
+      const payload = {
+        username: 'johndoe',
+      };
+      const jwtTokenManager = new AuthenticationTokenManagerJwt(jwt);
+      const accessToken = await jwtTokenManager.createAccessToken(payload);
+
+      // Action and Assert
+      await expect(jwtTokenManager.verifyAccessToken(accessToken))
+        .resolves.not.toThrowError(AuthenticationError);
     });
   });
 

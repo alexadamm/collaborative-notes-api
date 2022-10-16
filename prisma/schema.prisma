@@ -7,24 +7,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model users {
+model User {
   id       String @id @default(uuid()) @db.Uuid
   username String @unique
   password String
   fullname String
-  notes    notes[]
+  notes    Note[]
+
+  @@map("users")
 }
 
-model authentications {
+model Authentication {
   token String @unique
+
+  @@map("authentications")
 }
 
-model notes {
+model Note {
   id        String   @id @default(uuid()) @db.Uuid
-  owner     users?   @relation(fields: [ownerId], references: [id])
+  owner     User?   @relation(fields: [ownerId], references: [id])
   ownerId   String   @map("owner_id") @db.Uuid
   title     String?
   content   String?
   updatedAt DateTime @updatedAt @map("updated_at")
   createdAt DateTime @default(now())@map("created_at")
+
+  @@map("notes")
 }

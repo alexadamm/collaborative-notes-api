@@ -7,7 +7,7 @@ const UsersTableTestHelper = {
     username = 'johndoe', password = 'secret',
     fullname = 'John Doe',
   }) {
-    await pool.users.create({
+    await pool.User.create({
       data: {
         id, username, password, fullname,
       },
@@ -15,11 +15,11 @@ const UsersTableTestHelper = {
   },
 
   async findUserByUsername(username) {
-    return pool.users.findMany({ where: { username } });
+    return pool.User.findMany({ where: { username } });
   },
 
   async cleanTable() {
-    await pool.users.deleteMany();
+    await pool.User.deleteMany();
   },
 };
 

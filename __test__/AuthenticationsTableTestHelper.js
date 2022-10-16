@@ -3,15 +3,15 @@ const pool = require('../src/Infrastructures/database/postgres/pool');
 
 const AuthenticationsTableTestHelper = {
   async findToken(token) {
-    return pool.authentications.findUnique({ where: { token } });
+    return pool.Authentication.findUnique({ where: { token } });
   },
 
   async addToken(token) {
-    return pool.authentications.create({ data: { token } });
+    return pool.Authentication.create({ data: { token } });
   },
 
   async cleanTable() {
-    await pool.authentications.deleteMany();
+    await pool.Authentication.deleteMany();
   },
 };
 

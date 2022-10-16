@@ -8,18 +8,18 @@ class AuthenticationServicePrisma extends AuthenticationService {
   }
 
   async addToken(token) {
-    await this._pool.authentications.create({ data: { token } });
+    await this._pool.Authentication.create({ data: { token } });
   }
 
   async checkTokenAvailability(token) {
-    const result = await this._pool.authentications.findUnique({ where: { token } });
+    const result = await this._pool.Authentication.findUnique({ where: { token } });
     if (!result) {
       throw new NotFoundError({ token: 'Refresh token is not found' });
     }
   }
 
   async deleteToken(token) {
-    await this._pool.authentications.delete({ where: { token } });
+    await this._pool.Authentication.delete({ where: { token } });
   }
 }
 module.exports = AuthenticationServicePrisma;

@@ -11,7 +11,7 @@ class UsersServicePrisma extends UsersService {
   }
 
   async verifyAvailableUsername(username) {
-    const result = await this._pool.users
+    const result = await this._pool.User
       .findUnique({ where: { username }, select: { id: true } });
 
     if (result) {
@@ -20,14 +20,14 @@ class UsersServicePrisma extends UsersService {
   }
 
   async addUser(newUser) {
-    const user = await this._pool.users
+    const user = await this._pool.User
       .create({ data: newUser, select: { id: true, username: true, fullname: true } });
 
     return new AddedUser(user);
   }
 
   async getUsersByUsername(username) {
-    const results = await this._pool.users.findMany({
+    const results = await this._pool.User.findMany({
       where: { username: { contains: username } },
       select: { id: true, username: true, fullname: true },
     });
@@ -36,7 +36,7 @@ class UsersServicePrisma extends UsersService {
   }
 
   async getUserById(userId) {
-    const result = await this._pool.users.findUnique(
+    const result = await this._pool.User.findUnique(
       {
         where: { id: userId },
         select: { id: true, username: true, fullname: true },
@@ -51,7 +51,7 @@ class UsersServicePrisma extends UsersService {
   }
 
   async getIdByUsername(username) {
-    const user = await this._pool.users.findUnique({
+    const user = await this._pool.User.findUnique({
       where: { username },
       select: { id: true },
     });
@@ -64,7 +64,7 @@ class UsersServicePrisma extends UsersService {
   }
 
   async getPasswordByUsername(username) {
-    const user = await this._pool.users.findUnique({
+    const user = await this._pool.User.findUnique({
       where: { username },
       select: { password: true },
     });

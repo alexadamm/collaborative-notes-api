@@ -8,7 +8,7 @@ class NotesServicePrisma extends NotesService {
   }
 
   async addNote(newNote) {
-    const note = await this._pool.notes.create({ data: newNote });
+    const note = await this._pool.Note.create({ data: newNote });
     return new AddedNote(note);
   }
 }

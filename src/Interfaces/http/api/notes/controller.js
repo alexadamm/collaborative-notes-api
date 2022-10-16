@@ -9,10 +9,10 @@ class NotesController {
 
   async postNoteController(req, res, next) {
     try {
-      const { token } = req;
+      const { auth: { userId } } = req;
       const payload = req.body;
       const addNoteUseCase = this._container.getInstance(AddNoteUseCase.name);
-      const note = await addNoteUseCase.execute(payload, token);
+      const note = await addNoteUseCase.execute(payload, userId);
 
       res.status(201).send({
         isSuccess: true,

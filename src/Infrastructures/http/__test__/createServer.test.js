@@ -1,7 +1,14 @@
 const request = require('supertest');
 const createServer = require('../createServer');
+const container = require('../../container');
+const ServerTestHelper = require('../../../../__test__/ServerTestHelper');
+const DatabaseTestHelper = require('../../../../__test__/DatabaseTestHelper');
 
 describe('HTTP server', () => {
+  afterEach(async () => {
+    await DatabaseTestHelper.cleanTable();
+  });
+
   it('should response 404 when request to unregistered route', async () => {
     // Arrange
     const app = await createServer({});
@@ -41,10 +48,11 @@ describe('HTTP server', () => {
 
   it('should not throw AuthenticationError when token is provided', async () => {
     // Arrange
-    const app = await createServer({});
+    const app = await createServer(container);
+    const { accessToken } = await ServerTestHelper.newUser({ request, app }, {});
 
     // Action
-    const response = await request(app).post('/notes').set('Authorization', 'Bearer token');
+    const response = await request(app).post('/notes').set('Authorization', `Bearer ${accessToken}`);
 
     // Assert
     expect(response.statusCode).not.toEqual(401);

@@ -1,4 +1,5 @@
 const request = require('supertest');
+const DatabaseTestHelper = require('../../../../__test__/DatabaseTestHelper');
 
 const UsersTableTestHelper = require('../../../../__test__/UsersTableTestHelper');
 const container = require('../../container');
@@ -11,7 +12,7 @@ describe('/users endpoint', () => {
   });
 
   afterEach(async () => {
-    await UsersTableTestHelper.cleanTable();
+    await DatabaseTestHelper.cleanTable();
   });
 
   describe('when POST /users', () => {

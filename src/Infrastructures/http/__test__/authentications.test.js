@@ -1,6 +1,6 @@
 const request = require('supertest');
 const AuthenticationsTableTestHelper = require('../../../../__test__/AuthenticationsTableTestHelper');
-const UsersTableTestHelper = require('../../../../__test__/UsersTableTestHelper');
+const DatabaseTestHelper = require('../../../../__test__/DatabaseTestHelper');
 const container = require('../../container');
 const pool = require('../../database/postgres/pool');
 const createServer = require('../createServer');
@@ -11,8 +11,7 @@ describe('/authentications endpoint', () => {
   });
 
   afterEach(async () => {
-    await UsersTableTestHelper.cleanTable();
-    await AuthenticationsTableTestHelper.cleanTable();
+    await DatabaseTestHelper.cleanTable();
   });
 
   describe('when POST /authentications', () => {

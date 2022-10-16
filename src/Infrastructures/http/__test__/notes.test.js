@@ -1,16 +1,12 @@
 const request = require('supertest');
-const UsersTableTestHelper = require('../../../../__test__/UsersTableTestHelper');
-const AuthenticatoinsTableTestHelper = require('../../../../__test__/AuthenticationsTableTestHelper');
-const NotesTableTestHelper = require('../../../../__test__/NotesTableTestHelper');
 const ServerTestHelper = require('../../../../__test__/ServerTestHelper');
 const createServer = require('../createServer');
 const container = require('../../container');
+const DatabaseTestHelper = require('../../../../__test__/DatabaseTestHelper');
 
 describe('/notes endpoint', () => {
   afterEach(async () => {
-    await NotesTableTestHelper.cleanTable();
-    await AuthenticatoinsTableTestHelper.cleanTable();
-    await UsersTableTestHelper.cleanTable();
+    await DatabaseTestHelper.cleanTable();
   });
   describe('when POST /notes', () => {
     it('should return 201 and new note', async () => {

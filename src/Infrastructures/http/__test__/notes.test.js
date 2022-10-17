@@ -184,8 +184,10 @@ describe('/notes endpoint', () => {
       const response = await request(app).get(`/notes/${noteId}`);
 
       // Assert
+      const { errors } = response.body;
       expect(response.statusCode).toEqual(401);
       expect(response.body.isSuccess).toEqual(false);
+      expect(errors.message).toEqual('No token provided');
     });
   });
 
@@ -199,7 +201,152 @@ describe('/notes endpoint', () => {
     const response = await request(app).get(`/notes/${noteId}`).set('Authorization', `Bearer ${accessToken}`);
 
     // Assert
+    const { errors } = response.body;
     expect(response.statusCode).toEqual(401);
     expect(response.body.isSuccess).toEqual(false);
+    expect(errors.token).toEqual('Bearer Token is invalid');
+  });
+
+  describe('when PUT /notes/{noteId}', () => {
+    it('should return 200 and updated note', async () => {
+      // Arrange
+      const app = await createServer(container);
+      const { accessToken, userId } = await ServerTestHelper.newUser({ request, app }, { username: 'johndoe' });
+      const noteId = await NotesTableTestHelper.addNote({
+        title: 'note 1', content: 'note 1 body', ownerId: userId,
+      });
+      const payload = {
+        title: 'note 1 updated',
+        content: 'note 1 body updated',
+      };
+
+      // Action
+      const response = await request(app).put(`/notes/${noteId}`).send(payload).set('Authorization', `Bearer ${accessToken}`);
+
+      // Assert
+      const responseStatus = response.status;
+      const { data } = response.body;
+      expect(responseStatus).toEqual(200);
+      expect(data.id).toEqual(noteId);
+      expect(data.title).toEqual('note 1 updated');
+      expect(data.content).toEqual('note 1 body updated');
+      expect(data.owner).toEqual('johndoe');
+      expect(data.createdAt).toBeDefined();
+      expect(data.updatedAt).toBeDefined();
+    });
+
+    it('should return 401 when request without access token', async () => {
+      // Arrange
+      const app = await createServer(container);
+      const noteId = '12345678-abcd-abcd-abcd-123456789012';
+      const payload = {
+        title: 123,
+        content: 123,
+      };
+
+      // Action
+      const response = await request(app).put(`/notes/${noteId}`).send(payload);
+
+      // Assert
+      const { errors } = response.body;
+      expect(response.statusCode).toEqual(401);
+      expect(response.body.isSuccess).toEqual(false);
+      expect(errors.message).toEqual('No token provided');
+    });
+
+    it('should return 401 when access token invalid', async () => {
+    // Arrange
+      const app = await createServer(container);
+      const accessToken = 'bearer token';
+      const noteId = '12345678-abcd-abcd-abcd-123456789012';
+      const payload = {
+        title: 123,
+        content: 123,
+      };
+
+      // Action
+      const response = await request(app).put(`/notes/${noteId}`).send(payload).set('Authorization', `Bearer ${accessToken}`);
+
+      // Assert
+      const { errors } = response.body;
+      expect(response.statusCode).toEqual(401);
+      expect(response.body.isSuccess).toEqual(false);
+      expect(errors.token).toEqual('Bearer Token is invalid');
+    });
+
+    it('should return 400 when request params not meet data type specification', async () => {
+      // Arrange
+      const app = await createServer(container);
+      const { accessToken } = await ServerTestHelper.newUser({ request, app }, { username: 'johndoe' });
+      const noteId = 'note-123';
+      const payload = {
+        title: 123,
+        content: 123,
+      };
+
+      // Action
+      const response = await request(app).put(`/notes/${noteId}`).send(payload).set('Authorization', `Bearer ${accessToken}`);
+
+      // Assert
+      expect(response.statusCode).toEqual(400);
+      expect(response.body.isSuccess).toEqual(false);
+    });
+
+    it('should return 400 when request body not meet data type specification', async () => {
+      // Arrange
+      const app = await createServer(container);
+      const { accessToken } = await ServerTestHelper.newUser({ request, app }, { username: 'johndoe' });
+      const noteId = '12345678-abcd-abcd-abcd-123456789012';
+      const payload = {
+        title: 123,
+        content: 123,
+      };
+
+      // Action
+      const response = await request(app).put(`/notes/${noteId}`).send(payload).set('Authorization', `Bearer ${accessToken}`);
+
+      // Assert
+      expect(response.statusCode).toEqual(400);
+      expect(response.body.isSuccess).toEqual(false);
+    });
+
+    it('should return 404 when note is not found', async () => {
+      // Arrange
+      const app = await createServer(container);
+      const { accessToken } = await ServerTestHelper.newUser({ request, app }, { username: 'johndoe' });
+      const noteId = '12345678-abcd-abcd-abcd-123456789012';
+      const payload = {
+        title: 'note 1 updated',
+        content: 'note 1 body updated',
+      };
+
+      // Action
+      const response = await request(app).put(`/notes/${noteId}`).send(payload).set('Authorization', `Bearer ${accessToken}`);
+
+      // Assert
+      expect(response.statusCode).toEqual(404);
+      expect(response.body.isSuccess).toEqual(false);
+    });
+
+    it('should return 403 when try to update note that\'s not theirs', async () => {
+      // Arrange
+      const app = await createServer(container);
+      const { userId } = await ServerTestHelper.newUser({ request, app }, { username: 'johndoe' });
+      const { accessToken } = await ServerTestHelper.newUser({ request, app }, { username: 'foo' });
+      const noteId = await NotesTableTestHelper.addNote({
+        title: 'note 1', content: 'note 1 body', ownerId: userId,
+      });
+      const payload = {
+        title: 'note 1 updated',
+        content: 'note 1 body updated',
+      };
+
+      // Action
+      const response = await request(app).put(`/notes/${noteId}`).send(payload).set('Authorization', `Bearer ${accessToken}`);
+
+      // Assert
+      expect(response.statusCode).toEqual(403);
+      expect(response.body.isSuccess).toEqual(false);
+    });
   });
 });

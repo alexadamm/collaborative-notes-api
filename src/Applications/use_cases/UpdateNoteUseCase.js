@@ -16,7 +16,7 @@ class UpdateNoteUseCase {
     await this.notesService.getNoteById(noteId);
     await this.notesService.verifyNoteOwner(ownerId, noteId);
 
-    return this.notesService.updateNote(noteId, payload);
+    return this.notesService.updateNote(noteId, newNoteDetail);
   }
 }
 

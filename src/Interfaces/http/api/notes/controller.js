@@ -1,6 +1,8 @@
+const { REQUEST_CONTEXT_ID } = require('@nestjs/core/router/request/request-constants');
 const AddNoteUseCase = require('../../../../Applications/use_cases/AddNoteUseCase');
 const GetNoteByIdUseCase = require('../../../../Applications/use_cases/GetNoteByIdUseCase');
 const GetNotesByUserIdUseCase = require('../../../../Applications/use_cases/GetNotesByUserIdUseCase');
+const UpdateNoteUseCase = require('../../../../Applications/use_cases/UpdateNoteUseCase');
 
 class NotesController {
   constructor(container) {
@@ -9,6 +11,7 @@ class NotesController {
     this.postNoteController = this.postNoteController.bind(this);
     this.getNotesController = this.getNotesController.bind(this);
     this.getNoteByIdController = this.getNoteByIdController.bind(this);
+    this.putNoteController = this.putNoteController.bind(this);
   }
 
   async postNoteController(req, res, next) {
@@ -48,6 +51,21 @@ class NotesController {
       res.status(200).send({
         isSuccess: true,
         message: 'Note retrieved successfully',
+        data: note,
+      });
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  async putNoteController(req, res, next) {
+    try {
+      const updateNoteUseCase = this._container.getInstance(UpdateNoteUseCase.name);
+      const note = await updateNoteUseCase.execute(req.body, req.params, req.auth.userId);
+
+      res.status(200).send({
+        isSuccess: true,
+        message: 'Note updated successfully',
         data: note,
       });
     } catch (e) {

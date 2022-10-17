@@ -1,4 +1,5 @@
 const NotFoundError = require('../../Commons/exceptions/NotFoundError');
+const AuthorizationError = require('../../Commons/exceptions/AuthorizationError');
 const NoteDetail = require('../../Domains/notes/entities/NoteDetail');
 const NotesService = require('../../Domains/notes/NotesService');
 
@@ -31,7 +32,7 @@ class NotesServicePrisma extends NotesService {
     });
 
     if (!result) {
-      throw new NotFoundError();
+      throw new NotFoundError({ noteId: 'Note not found' });
     }
 
     return new NoteDetail({ ...result, owner: result.owner.username });
@@ -43,6 +44,35 @@ class NotesServicePrisma extends NotesService {
     );
 
     return notes.map((note) => new NoteDetail({ ...note, owner: note.owner.username }));
+  }
+
+  async verifyNoteOwner(userId, noteId) {
+    const note = await this._pool.Note.findUnique({
+      where: {
+        id: noteId,
+      },
+      select: { ownerId: true },
+    });
+
+    if ((note.ownerId !== userId)) {
+      throw new AuthorizationError({ message: 'You do not have access to this resource' });
+    }
+  }
+
+  async updateNote(noteId, newNoteDetail) {
+    const note = await this._pool.Note.update(
+      {
+        where: { id: noteId },
+        data: newNoteDetail,
+        include: {
+          owner: {
+            select: { username: true },
+          },
+        },
+      },
+    );
+
+    return new NoteDetail({ ...note, owner: note.owner.username });
   }
 }
 

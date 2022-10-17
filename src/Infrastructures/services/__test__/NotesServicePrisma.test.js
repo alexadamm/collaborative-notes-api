@@ -5,6 +5,7 @@ const NoteDetail = require('../../../Domains/notes/entities/NoteDetail');
 const NewNote = require('../../../Domains/notes/entities/NewNote');
 const pool = require('../../database/postgres/pool');
 const NotesServicePrisma = require('../NotesServicePrisma');
+const AuthorizationError = require('../../../Commons/exceptions/AuthorizationError');
 
 describe('NotesServicePrisma', () => {
   beforeEach(async () => {
@@ -103,6 +104,52 @@ describe('NotesServicePrisma', () => {
 
       // Assert
       expect(notes).toHaveLength(3);
+    });
+  });
+
+  describe('verifyNoteOwner method', () => {
+    it('should throw AuthorizationError when the note does not owned by the user', async () => {
+      // Arrange
+      const noteOwnerId = '12345678-abcd-abcd-abcd-123456789012';
+      const userId = '12345678-abcd-abcd-abcd-123456789013';
+      const notesServicePrisma = new NotesServicePrisma(pool);
+      const noteId = await NotesTableTestHelper.addNote({ ownerId: noteOwnerId });
+
+      // Action & Assert
+      await expect(notesServicePrisma.verifyNoteOwner(userId, noteId))
+        .rejects.toThrowError(AuthorizationError);
+    });
+
+    it('should not throw AuthorizationError when the note owned by the user', async () => {
+      // Arrange
+      const noteOwnerId = '12345678-abcd-abcd-abcd-123456789012';
+      const notesServicePrisma = new NotesServicePrisma(pool);
+      const noteId = await NotesTableTestHelper.addNote({ ownerId: noteOwnerId });
+
+      // Action & Assert
+      await expect(notesServicePrisma.verifyNoteOwner(noteOwnerId, noteId))
+        .resolves.not.toThrowError(AuthorizationError);
+    });
+  });
+
+  describe('updateNote method', () => {
+    it('should update note correctly', async () => {
+      // Arrange
+      const ownerId = '12345678-abcd-abcd-abcd-123456789012';
+      const notesServicePrisma = new NotesServicePrisma(pool);
+      const noteId = await NotesTableTestHelper.addNote({ ownerId });
+      const newNoteDetail = new NoteDetail({
+        title: 'Updated note title',
+        content: 'lorem ipsum dolor sit amet.',
+      });
+
+      // Action
+      const updatedNote = await notesServicePrisma.updateNote(noteId, newNoteDetail);
+
+      // Assert
+      expect(updatedNote).toBeInstanceOf(NoteDetail);
+      expect(updatedNote.title).toEqual(newNoteDetail.title);
+      expect(updatedNote.content).toEqual(newNoteDetail.content);
     });
   });
 });

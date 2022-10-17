@@ -11,6 +11,10 @@ class NotesService {
     throw new Error('NOTES_SERVICE.METHOD_NOT_IMPLEMENTED');
   }
 
+  async verifyNoteOwner(ownerId, noteId) {
+    throw new Error('NOTES_SERVICE.METHOD_NOT_IMPLEMENTED');
+  }
+
   async updateNote(notes) {
     throw new Error('NOTES_SERVICE.METHOD_NOT_IMPLEMENTED');
   }

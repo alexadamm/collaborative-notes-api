@@ -1,9 +1,9 @@
 const ValidationErrorHandler = require('../../../Commons/exceptions/ValidationErrorHandler');
-const { PostNotePayloadSchema, GetNoteByIdParamsSchema } = require('./schema');
+const { NotePayloadSchema, NoteByIdParamsSchema } = require('./schema');
 
 const NotesValidator = {
   validatePostNotePayload: (payload) => {
-    const validationResult = PostNotePayloadSchema.validate(payload);
+    const validationResult = NotePayloadSchema.validate(payload);
 
     if (validationResult.error) {
       ValidationErrorHandler(validationResult);
@@ -11,7 +11,23 @@ const NotesValidator = {
   },
 
   validateGetNoteByIdParams: (params) => {
-    const validationResult = GetNoteByIdParamsSchema.validate(params);
+    const validationResult = NoteByIdParamsSchema.validate(params);
+
+    if (validationResult.error) {
+      ValidationErrorHandler(validationResult);
+    }
+  },
+
+  validatePutNoteParams: (params) => {
+    const validationResult = NoteByIdParamsSchema.validate(params);
+
+    if (validationResult.error) {
+      ValidationErrorHandler(validationResult);
+    }
+  },
+
+  validatePutNotePayload: (payload) => {
+    const validationResult = NotePayloadSchema.validate(payload);
 
     if (validationResult.error) {
       ValidationErrorHandler(validationResult);

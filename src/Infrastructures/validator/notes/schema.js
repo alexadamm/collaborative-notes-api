@@ -1,12 +1,12 @@
 const Joi = require('joi');
 
-const PostNotePayloadSchema = Joi.object({
+const NotePayloadSchema = Joi.object({
   title: Joi.string().max(100),
   content: Joi.string(),
 });
 
-const GetNoteByIdParamsSchema = Joi.object({
+const NoteByIdParamsSchema = Joi.object({
   noteId: Joi.string().uuid().required(),
 });
 
-module.exports = { PostNotePayloadSchema, GetNoteByIdParamsSchema };
+module.exports = { NotePayloadSchema, NoteByIdParamsSchema };

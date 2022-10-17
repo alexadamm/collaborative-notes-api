@@ -349,4 +349,99 @@ describe('/notes endpoint', () => {
       expect(response.body.isSuccess).toEqual(false);
     });
   });
+
+  describe('when DELETE /notes/{noteId}', () => {
+    it('should return 200', async () => {
+      // Arrange
+      const app = await createServer(container);
+      const { accessToken, userId } = await ServerTestHelper.newUser({ request, app }, { username: 'johndoe' });
+      const noteId = await NotesTableTestHelper.addNote({
+        title: 'note 1', content: 'note 1 body', ownerId: userId,
+      });
+
+      // Action
+      const response = await request(app).delete(`/notes/${noteId}`).set('Authorization', `Bearer ${accessToken}`);
+
+      // Assert
+      expect(response.statusCode).toEqual(200);
+      expect(response.body.isSuccess).toEqual(true);
+      expect(response.body.message).toEqual('Note deleted successfully');
+    });
+
+    it('should return 401 when request without access token', async () => {
+      // Arrange
+      const app = await createServer(container);
+      const noteId = '12345678-abcd-abcd-abcd-123456789012';
+
+      // Action
+      const response = await request(app).delete(`/notes/${noteId}`);
+
+      // Assert
+      const { errors } = response.body;
+      expect(response.statusCode).toEqual(401);
+      expect(response.body.isSuccess).toEqual(false);
+      expect(errors.message).toEqual('No token provided');
+    });
+
+    it('should return 401 when access token invalid', async () => {
+      // Arrange
+      const app = await createServer(container);
+      const accessToken = 'bearer token';
+      const noteId = '12345678-abcd-abcd-abcd-123456789012';
+
+      // Action
+      const response = await request(app).delete(`/notes/${noteId}`).set('Authorization', `Bearer ${accessToken}`);
+
+      // Assert
+      const { errors } = response.body;
+      expect(response.statusCode).toEqual(401);
+      expect(response.body.isSuccess).toEqual(false);
+      expect(errors.token).toEqual('Bearer Token is invalid');
+    });
+
+    it('should return 400 when request params not meet data type specification', async () => {
+    // Arrange
+      const app = await createServer(container);
+      const { accessToken } = await ServerTestHelper.newUser({ request, app }, { username: 'johndoe' });
+      const noteId = 'note-123';
+
+      // Action
+      const response = await request(app).delete(`/notes/${noteId}`).set('Authorization', `Bearer ${accessToken}`);
+
+      // Assert
+      expect(response.statusCode).toEqual(400);
+      expect(response.body.isSuccess).toEqual(false);
+    });
+
+    it('should return 404 when note is not found', async () => {
+    // Arrange
+      const app = await createServer(container);
+      const { accessToken } = await ServerTestHelper.newUser({ request, app }, { username: 'johndoe' });
+      const noteId = '12345678-abcd-abcd-abcd-123456789012';
+
+      // Action
+      const response = await request(app).delete(`/notes/${noteId}`).set('Authorization', `Bearer ${accessToken}`);
+
+      // Assert
+      expect(response.statusCode).toEqual(404);
+      expect(response.body.isSuccess).toEqual(false);
+    });
+
+    it('should return 403 when try to delete note that\'s not theirs', async () => {
+    // Arrange
+      const app = await createServer(container);
+      const { userId } = await ServerTestHelper.newUser({ request, app }, { username: 'johndoe' });
+      const { accessToken } = await ServerTestHelper.newUser({ request, app }, { username: 'foo' });
+      const noteId = await NotesTableTestHelper.addNote({
+        title: 'note 1', content: 'note 1 body', ownerId: userId,
+      });
+
+      // Action
+      const response = await request(app).delete(`/notes/${noteId}`).set('Authorization', `Bearer ${accessToken}`);
+
+      // Assert
+      expect(response.statusCode).toEqual(403);
+      expect(response.body.isSuccess).toEqual(false);
+    });
+  });
 });

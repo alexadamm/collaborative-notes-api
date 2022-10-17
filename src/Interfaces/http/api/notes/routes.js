@@ -10,6 +10,7 @@ const notes = (container) => {
   notesRouter.get('/', ServerMiddlewares.authenticationHandler, notesController.getNotesController);
   notesRouter.get('/:noteId/', ServerMiddlewares.authenticationHandler, notesController.getNoteByIdController);
   notesRouter.put('/:noteId/', ServerMiddlewares.authenticationHandler, notesController.putNoteController);
+  notesRouter.delete('/:noteId/', ServerMiddlewares.authenticationHandler, notesController.deleteNoteByIdController);
 
   return notesRouter;
 };

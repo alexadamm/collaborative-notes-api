@@ -101,4 +101,28 @@ describe('NotesValidator', () => {
         .not.toThrowError(InvariantError);
     });
   });
+
+  describe('delete note request params', () => {
+    it('should throw InvariantError when params did not meet data type specification', () => {
+      // Arrange
+      const params = {
+        noteId: '123',
+      };
+
+      // Action and Assert
+      expect(() => NotesValidator.validateDeleteNoteParams(params))
+        .toThrowError(InvariantError);
+    });
+
+    it('should not throw InvariantError when validated', () => {
+      // Arrange
+      const params = {
+        noteId: '12345678-abcd-abcd-abcd-123456789012',
+      };
+
+      // Actiom and Assert
+      expect(() => NotesValidator.validateDeleteNoteParams(params))
+        .not.toThrowError(InvariantError);
+    });
+  });
 });

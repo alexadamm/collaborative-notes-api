@@ -1,5 +1,6 @@
 const { REQUEST_CONTEXT_ID } = require('@nestjs/core/router/request/request-constants');
 const AddNoteUseCase = require('../../../../Applications/use_cases/AddNoteUseCase');
+const DeleteNoteByIdUseCase = require('../../../../Applications/use_cases/DeleteNoteByIdUseCase');
 const GetNoteByIdUseCase = require('../../../../Applications/use_cases/GetNoteByIdUseCase');
 const GetNotesByUserIdUseCase = require('../../../../Applications/use_cases/GetNotesByUserIdUseCase');
 const UpdateNoteUseCase = require('../../../../Applications/use_cases/UpdateNoteUseCase');
@@ -12,6 +13,7 @@ class NotesController {
     this.getNotesController = this.getNotesController.bind(this);
     this.getNoteByIdController = this.getNoteByIdController.bind(this);
     this.putNoteController = this.putNoteController.bind(this);
+    this.deleteNoteByIdController = this.deleteNoteByIdController.bind(this);
   }
 
   async postNoteController(req, res, next) {
@@ -67,6 +69,20 @@ class NotesController {
         isSuccess: true,
         message: 'Note updated successfully',
         data: note,
+      });
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  async deleteNoteByIdController(req, res, next) {
+    try {
+      const deleteNoteByIdUseCase = this._container.getInstance(DeleteNoteByIdUseCase.name);
+      await deleteNoteByIdUseCase.execute(req.params, req.auth.userId);
+
+      res.status(200).send({
+        isSuccess: true,
+        message: 'Note deleted successfully',
       });
     } catch (e) {
       next(e);

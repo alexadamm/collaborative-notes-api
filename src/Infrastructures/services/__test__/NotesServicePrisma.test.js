@@ -152,4 +152,20 @@ describe('NotesServicePrisma', () => {
       expect(updatedNote.content).toEqual(newNoteDetail.content);
     });
   });
+
+  describe('deleteNoteById method', () => {
+    it('should delete note correctly', async () => {
+      // Arrange
+      const ownerId = '12345678-abcd-abcd-abcd-123456789012';
+      const notesServicePrisma = new NotesServicePrisma(pool);
+      const noteId = await NotesTableTestHelper.addNote({ ownerId });
+
+      // Action
+      await notesServicePrisma.deleteNoteById(noteId);
+
+      // Assert
+      const notes = await NotesTableTestHelper.findNoteByOwnerId(ownerId);
+      expect(notes).toHaveLength(0);
+    });
+  });
 });

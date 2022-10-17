@@ -33,6 +33,14 @@ const NotesValidator = {
       ValidationErrorHandler(validationResult);
     }
   },
+
+  validateDeleteNoteParams: (params) => {
+    const validationResult = NoteByIdParamsSchema.validate(params);
+
+    if (validationResult.error) {
+      ValidationErrorHandler(validationResult);
+    }
+  },
 };
 
 module.exports = NotesValidator;

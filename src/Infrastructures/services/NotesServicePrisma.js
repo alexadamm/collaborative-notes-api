@@ -74,6 +74,10 @@ class NotesServicePrisma extends NotesService {
 
     return new NoteDetail({ ...note, owner: note.owner.username });
   }
+
+  async deleteNoteById(noteId) {
+    await this._pool.Note.delete({ where: { id: noteId } });
+  }
 }
 
 module.exports = NotesServicePrisma;

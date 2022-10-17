@@ -25,6 +25,7 @@ const NotesValidator = require('./validator/notes');
 const GetNoteByIdUseCase = require('../Applications/use_cases/GetNoteByIdUseCase');
 const GetNotesByUserIdUseCase = require('../Applications/use_cases/GetNotesByUserIdUseCase');
 const UpdateNoteUseCase = require('../Applications/use_cases/UpdateNoteUseCase');
+const DeleteNoteByIdUseCase = require('../Applications/use_cases/DeleteNoteByIdUseCase');
 
 // creating container
 const container = createContainer();
@@ -246,6 +247,23 @@ container.register([
   {
     key: UpdateNoteUseCase.name,
     Class: UpdateNoteUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'notesValidator',
+          concrete: NotesValidator,
+        },
+        {
+          name: 'notesService',
+          internal: NotesService.name,
+        },
+      ],
+    },
+  },
+  {
+    key: DeleteNoteByIdUseCase.name,
+    Class: DeleteNoteByIdUseCase,
     parameter: {
       injectType: 'destructuring',
       dependencies: [

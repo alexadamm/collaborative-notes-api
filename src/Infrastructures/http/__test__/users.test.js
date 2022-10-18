@@ -31,7 +31,7 @@ describe('/users endpoint', () => {
 
       // Assert
       const responseStatus = response.status;
-      const { id, username, fullname } = response.body.data;
+      const { id, username, fullname } = response.body.data.addedUser;
       const persistedUser = await UsersTableTestHelper.findUserByUsername(payload.username);
 
       expect(responseStatus).toEqual(201);
@@ -153,24 +153,11 @@ describe('/users endpoint', () => {
 
       // Assert
       expect(response.statusCode).toEqual(200);
-      expect(response.body.data).toHaveLength(1);
+      expect(response.body.data.users).toHaveLength(1);
     });
   });
 
   describe('when GET /users/{userId}', () => {
-    it('should response 404 when user is not found', async () => {
-      // Arrange
-      const userId = '12345678-abcd-abcd-abcd-123456789012';
-      const app = await createServer(container);
-
-      // Action
-      const response = await request(app).get(`/users/${userId}`);
-
-      // Assert
-      expect(response.statusCode).toEqual(404);
-      expect(response.body.errors.id).toEqual('User not found');
-    });
-
     it('should response 200 and user data', async () => {
       // Arrange
       const userId = '12345678-abcd-abcd-abcd-123456789012';
@@ -182,7 +169,20 @@ describe('/users endpoint', () => {
 
       // Assert
       expect(response.statusCode).toEqual(200);
-      expect(response.body.data.id).toEqual(userId);
+      expect(response.body.data.user.id).toEqual(userId);
+    });
+
+    it('should response 404 when user is not found', async () => {
+      // Arrange
+      const userId = '12345678-abcd-abcd-abcd-123456789012';
+      const app = await createServer(container);
+
+      // Action
+      const response = await request(app).get(`/users/${userId}`);
+
+      // Assert
+      expect(response.statusCode).toEqual(404);
+      expect(response.body.errors.id).toEqual('User not found');
     });
   });
 });

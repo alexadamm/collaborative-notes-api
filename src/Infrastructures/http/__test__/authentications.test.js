@@ -29,10 +29,11 @@ describe('/authentications endpoint', () => {
       const response = await request(app).post('/authentications').send(requestPayload);
 
       // Assert
+      const { accessToken, refreshToken } = response.body.data;
       expect(response.statusCode).toEqual(201);
       expect(response.body.isSuccess).toEqual(true);
-      expect(response.body.data.accessToken).toBeDefined();
-      expect(response.body.data.refreshToken).toBeDefined();
+      expect(accessToken).toBeDefined();
+      expect(refreshToken).toBeDefined();
     });
 
     it('should response 401 when username or password incorrect', async () => {

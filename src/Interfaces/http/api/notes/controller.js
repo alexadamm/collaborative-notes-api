@@ -21,12 +21,12 @@ class NotesController {
       const { auth: { userId } } = req;
       const payload = req.body;
       const addNoteUseCase = this._container.getInstance(AddNoteUseCase.name);
-      const note = await addNoteUseCase.execute(payload, userId);
+      const addedNote = await addNoteUseCase.execute(payload, userId);
 
       res.status(201).send({
         isSuccess: true,
         message: 'Note added successfully',
-        data: note,
+        data: { addedNote },
       });
     } catch (e) {
       next(e);
@@ -41,7 +41,7 @@ class NotesController {
     res.status(200).send({
       isSuccess: true,
       message: 'Notes retrieved successfully',
-      data: notes,
+      data: { notes },
     });
   }
 
@@ -53,7 +53,7 @@ class NotesController {
       res.status(200).send({
         isSuccess: true,
         message: 'Note retrieved successfully',
-        data: note,
+        data: { note },
       });
     } catch (e) {
       next(e);
@@ -63,12 +63,12 @@ class NotesController {
   async putNoteController(req, res, next) {
     try {
       const updateNoteUseCase = this._container.getInstance(UpdateNoteUseCase.name);
-      const note = await updateNoteUseCase.execute(req.body, req.params, req.auth.userId);
+      const updatedNote = await updateNoteUseCase.execute(req.body, req.params, req.auth.userId);
 
       res.status(200).send({
         isSuccess: true,
         message: 'Note updated successfully',
-        data: note,
+        data: { updatedNote },
       });
     } catch (e) {
       next(e);

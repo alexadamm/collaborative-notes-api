@@ -15,12 +15,12 @@ class UsersController {
     try {
       const payload = req.body;
       const addUserUseCase = this._container.getInstance(AddUserUseCase.name);
-      const user = await addUserUseCase.execute(payload);
+      const addedUser = await addUserUseCase.execute(payload);
 
       res.status(201).json({
         isSuccess: true,
         message: 'User added successfully',
-        data: user,
+        data: { addedUser },
       });
     } catch (e) {
       next(e);
@@ -35,7 +35,7 @@ class UsersController {
     res.status(200).json({
       isSuccess: true,
       message: 'Users retrieved successfully',
-      data: users,
+      data: { users },
     });
   }
 
@@ -48,7 +48,7 @@ class UsersController {
       res.status(200).json({
         isSuccess: true,
         message: 'User retrieved successfully',
-        data: user,
+        data: { user },
       });
     } catch (e) {
       next(e);

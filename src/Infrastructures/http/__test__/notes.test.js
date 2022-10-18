@@ -26,7 +26,7 @@ describe('/notes endpoint', () => {
       const responseStatus = response.status;
       const {
         id, title, content, owner, updatedAt, createdAt,
-      } = response.body.data;
+      } = response.body.data.addedNote;
       expect(responseStatus).toEqual(201);
       expect(id).toBeDefined();
       expect(title).toEqual(payload.title);
@@ -106,11 +106,11 @@ describe('/notes endpoint', () => {
 
       // Assert
       const responseStatus = response.status;
-      const { data } = response.body;
+      const { notes } = response.body.data;
       expect(responseStatus).toEqual(200);
-      expect(data).toHaveLength(2);
-      expect(data[0].owner).toEqual('johndoe');
-      expect(data[1].owner).toEqual('johndoe');
+      expect(notes).toHaveLength(2);
+      expect(notes[0].owner).toEqual('johndoe');
+      expect(notes[1].owner).toEqual('johndoe');
     });
 
     it('should return 401 when request without access token', async () => {
@@ -153,12 +153,12 @@ describe('/notes endpoint', () => {
 
       // Assert
       const responseStatus = response.status;
-      const { data } = response.body;
+      const { note } = response.body.data;
       expect(responseStatus).toEqual(200);
-      expect(data.id).toEqual(noteId);
-      expect(data.title).toEqual('note 1');
-      expect(data.content).toEqual('note 1 body');
-      expect(data.owner).toEqual('johndoe');
+      expect(note.id).toEqual(noteId);
+      expect(note.title).toEqual('note 1');
+      expect(note.content).toEqual('note 1 body');
+      expect(note.owner).toEqual('johndoe');
     });
 
     it('should return 404 when note not found', async () => {
@@ -225,14 +225,14 @@ describe('/notes endpoint', () => {
 
       // Assert
       const responseStatus = response.status;
-      const { data } = response.body;
+      const { updatedNote } = response.body.data;
       expect(responseStatus).toEqual(200);
-      expect(data.id).toEqual(noteId);
-      expect(data.title).toEqual('note 1 updated');
-      expect(data.content).toEqual('note 1 body updated');
-      expect(data.owner).toEqual('johndoe');
-      expect(data.createdAt).toBeDefined();
-      expect(data.updatedAt).toBeDefined();
+      expect(updatedNote.id).toEqual(noteId);
+      expect(updatedNote.title).toEqual('note 1 updated');
+      expect(updatedNote.content).toEqual('note 1 body updated');
+      expect(updatedNote.owner).toEqual('johndoe');
+      expect(updatedNote.createdAt).toBeDefined();
+      expect(updatedNote.updatedAt).toBeDefined();
     });
 
     it('should return 401 when request without access token', async () => {

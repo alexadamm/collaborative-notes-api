@@ -29,26 +29,22 @@ class ServerMiddlewares {
   }
 
   static async authenticationHandler(req, res, next) {
-    try {
-      const authTokenManager = container.getInstance(AuthenticationTokenManager.name);
-      const usersService = container.getInstance(UsersService.name);
+    const authTokenManager = container.getInstance(AuthenticationTokenManager.name);
+    const usersService = container.getInstance(UsersService.name);
 
-      const bearerHeader = req.headers.authorization;
+    const bearerHeader = req.headers.authorization;
 
-      if (typeof bearerHeader === 'undefined') {
-        throw new AuthenticationError({ message: 'No token provided' });
-      }
-
-      const bearerToken = bearerHeader.split(' ')[1];
-
-      const { id: userId, username } = await authTokenManager.decodePayload(bearerToken);
-      await usersService.getUserById(userId);
-
-      req.auth = { userId, username };
-      next();
-    } catch (e) {
-      next(e);
+    if (typeof bearerHeader === 'undefined') {
+      throw new AuthenticationError({ message: 'No token provided' });
     }
+
+    const bearerToken = bearerHeader.split(' ')[1];
+
+    const { id: userId, username } = await authTokenManager.decodePayload(bearerToken);
+    await usersService.getUserById(userId);
+
+    req.auth = { userId, username };
+    next();
   }
 }
 

@@ -18,7 +18,6 @@ const createServer = async (container) => {
   app.use('/notes', notes(container));
 
   app.use(ServerMiddlewares.unregisteredRouteHandler);
-
   app.use(ServerMiddlewares.errorHandler);
 
   return app;

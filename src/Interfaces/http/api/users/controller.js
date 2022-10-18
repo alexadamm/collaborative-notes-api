@@ -11,23 +11,19 @@ class UsersController {
     this.getUserByUserIdController = this.getUserByUserIdController.bind(this);
   }
 
-  async postUserController(req, res, next) {
-    try {
-      const payload = req.body;
-      const addUserUseCase = this._container.getInstance(AddUserUseCase.name);
-      const addedUser = await addUserUseCase.execute(payload);
+  async postUserController(req, res) {
+    const payload = req.body;
+    const addUserUseCase = this._container.getInstance(AddUserUseCase.name);
+    const addedUser = await addUserUseCase.execute(payload);
 
-      res.status(201).json({
-        isSuccess: true,
-        message: 'User added successfully',
-        data: { addedUser },
-      });
-    } catch (e) {
-      next(e);
-    }
+    res.status(201).json({
+      isSuccess: true,
+      message: 'User added successfully',
+      data: { addedUser },
+    });
   }
 
-  async getUserByUsernameController(req, res, next) {
+  async getUserByUsernameController(req, res) {
     const { query } = req;
     const getUsersByUsernameUseCase = this._container.getInstance(GetUsersByUsernameUseCase.name);
     const users = await getUsersByUsernameUseCase.execute(query);
@@ -39,20 +35,16 @@ class UsersController {
     });
   }
 
-  async getUserByUserIdController(req, res, next) {
-    try {
-      const { params } = req;
-      const getUserByIdUseCase = this._container.getInstance(GetUserByIdUseCase.name);
-      const user = await getUserByIdUseCase.execute(params);
+  async getUserByUserIdController(req, res) {
+    const { params } = req;
+    const getUserByIdUseCase = this._container.getInstance(GetUserByIdUseCase.name);
+    const user = await getUserByIdUseCase.execute(params);
 
-      res.status(200).json({
-        isSuccess: true,
-        message: 'User retrieved successfully',
-        data: { user },
-      });
-    } catch (e) {
-      next(e);
-    }
+    res.status(200).json({
+      isSuccess: true,
+      message: 'User retrieved successfully',
+      data: { user },
+    });
   }
 }
 

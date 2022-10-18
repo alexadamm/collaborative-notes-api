@@ -9,35 +9,27 @@ class AuthenticationsController {
     this.deleteAuthenticationController = this.deleteAuthenticationController.bind(this);
   }
 
-  async postAuthenticationController(req, res, next) {
-    try {
-      const payload = req.body;
-      const loginUserUseCase = this._container.getInstance(LoginUserUseCase.name);
-      const authentication = await loginUserUseCase.execute(payload);
+  async postAuthenticationController(req, res) {
+    const payload = req.body;
+    const loginUserUseCase = this._container.getInstance(LoginUserUseCase.name);
+    const authentication = await loginUserUseCase.execute(payload);
 
-      res.status(201).json({
-        isSuccess: true,
-        message: 'Authentication added successfully',
-        data: authentication,
-      });
-    } catch (e) {
-      next(e);
-    }
+    res.status(201).json({
+      isSuccess: true,
+      message: 'Authentication added successfully',
+      data: authentication,
+    });
   }
 
-  async deleteAuthenticationController(req, res, next) {
-    try {
-      const payload = req.body;
-      const logoutUserUseCase = this._container.getInstance(LogoutUserUseCase.name);
-      await logoutUserUseCase.execute(payload);
+  async deleteAuthenticationController(req, res) {
+    const payload = req.body;
+    const logoutUserUseCase = this._container.getInstance(LogoutUserUseCase.name);
+    await logoutUserUseCase.execute(payload);
 
-      res.status(200).json({
-        isSuccess: true,
-        message: 'Authentication deleted successfully',
-      });
-    } catch (e) {
-      next(e);
-    }
+    res.status(200).json({
+      isSuccess: true,
+      message: 'Authentication deleted successfully',
+    });
   }
 }
 

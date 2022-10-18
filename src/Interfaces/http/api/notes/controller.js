@@ -1,4 +1,3 @@
-const { REQUEST_CONTEXT_ID } = require('@nestjs/core/router/request/request-constants');
 const AddNoteUseCase = require('../../../../Applications/use_cases/AddNoteUseCase');
 const DeleteNoteByIdUseCase = require('../../../../Applications/use_cases/DeleteNoteByIdUseCase');
 const GetNoteByIdUseCase = require('../../../../Applications/use_cases/GetNoteByIdUseCase');
@@ -16,24 +15,20 @@ class NotesController {
     this.deleteNoteByIdController = this.deleteNoteByIdController.bind(this);
   }
 
-  async postNoteController(req, res, next) {
-    try {
-      const { auth: { userId } } = req;
-      const payload = req.body;
-      const addNoteUseCase = this._container.getInstance(AddNoteUseCase.name);
-      const addedNote = await addNoteUseCase.execute(payload, userId);
+  async postNoteController(req, res) {
+    const { auth: { userId } } = req;
+    const payload = req.body;
+    const addNoteUseCase = this._container.getInstance(AddNoteUseCase.name);
+    const addedNote = await addNoteUseCase.execute(payload, userId);
 
-      res.status(201).send({
-        isSuccess: true,
-        message: 'Note added successfully',
-        data: { addedNote },
-      });
-    } catch (e) {
-      next(e);
-    }
+    res.status(201).send({
+      isSuccess: true,
+      message: 'Note added successfully',
+      data: { addedNote },
+    });
   }
 
-  async getNotesController(req, res, next) {
+  async getNotesController(req, res) {
     const { auth: { userId } } = req;
     const getNotesByUserIdUseCase = this._container.getInstance(GetNotesByUserIdUseCase.name);
     const notes = await getNotesByUserIdUseCase.execute(userId);
@@ -45,48 +40,36 @@ class NotesController {
     });
   }
 
-  async getNoteByIdController(req, res, next) {
-    try {
-      const getNoteByIdUseCase = this._container.getInstance(GetNoteByIdUseCase.name);
-      const note = await getNoteByIdUseCase.execute(req.params);
+  async getNoteByIdController(req, res) {
+    const getNoteByIdUseCase = this._container.getInstance(GetNoteByIdUseCase.name);
+    const note = await getNoteByIdUseCase.execute(req.params);
 
-      res.status(200).send({
-        isSuccess: true,
-        message: 'Note retrieved successfully',
-        data: { note },
-      });
-    } catch (e) {
-      next(e);
-    }
+    res.status(200).send({
+      isSuccess: true,
+      message: 'Note retrieved successfully',
+      data: { note },
+    });
   }
 
-  async putNoteController(req, res, next) {
-    try {
-      const updateNoteUseCase = this._container.getInstance(UpdateNoteUseCase.name);
-      const updatedNote = await updateNoteUseCase.execute(req.body, req.params, req.auth.userId);
+  async putNoteController(req, res) {
+    const updateNoteUseCase = this._container.getInstance(UpdateNoteUseCase.name);
+    const updatedNote = await updateNoteUseCase.execute(req.body, req.params, req.auth.userId);
 
-      res.status(200).send({
-        isSuccess: true,
-        message: 'Note updated successfully',
-        data: { updatedNote },
-      });
-    } catch (e) {
-      next(e);
-    }
+    res.status(200).send({
+      isSuccess: true,
+      message: 'Note updated successfully',
+      data: { updatedNote },
+    });
   }
 
-  async deleteNoteByIdController(req, res, next) {
-    try {
-      const deleteNoteByIdUseCase = this._container.getInstance(DeleteNoteByIdUseCase.name);
-      await deleteNoteByIdUseCase.execute(req.params, req.auth.userId);
+  async deleteNoteByIdController(req, res) {
+    const deleteNoteByIdUseCase = this._container.getInstance(DeleteNoteByIdUseCase.name);
+    await deleteNoteByIdUseCase.execute(req.params, req.auth.userId);
 
-      res.status(200).send({
-        isSuccess: true,
-        message: 'Note deleted successfully',
-      });
-    } catch (e) {
-      next(e);
-    }
+    res.status(200).send({
+      isSuccess: true,
+      message: 'Note deleted successfully',
+    });
   }
 }
 

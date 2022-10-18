@@ -3,7 +3,7 @@ const { PostAuthenticationSchema, DeleteAuthenticationSchema } = require('./sche
 
 const AuthenticationValidator = {
   validatePostAuthenticationPayload: (payload) => {
-    const validationResult = PostAuthenticationSchema.validate(payload);
+    const validationResult = PostAuthenticationSchema.validate(payload, { abortEarly: false });
 
     if (validationResult.error) {
       ValidationErrorHandler(validationResult);
@@ -11,7 +11,7 @@ const AuthenticationValidator = {
   },
 
   validateDeleteAuthenticationPayload: (payload) => {
-    const validationResult = DeleteAuthenticationSchema.validate(payload);
+    const validationResult = DeleteAuthenticationSchema.validate(payload, { abortEarly: false });
 
     if (validationResult.error) {
       ValidationErrorHandler(validationResult);

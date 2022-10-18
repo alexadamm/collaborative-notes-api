@@ -14,7 +14,7 @@ class AuthenticationServicePrisma extends AuthenticationService {
   async checkTokenAvailability(token) {
     const result = await this._pool.Authentication.findUnique({ where: { token } });
     if (!result) {
-      throw new NotFoundError({ token: 'Refresh token is not found' });
+      throw new NotFoundError({ token: ['Refresh token is not found'] });
     }
   }
 

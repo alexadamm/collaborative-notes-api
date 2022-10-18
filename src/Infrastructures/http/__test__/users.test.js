@@ -30,15 +30,13 @@ describe('/users endpoint', () => {
       const response = await request(app).post('/users').send(payload);
 
       // Assert
-      const responseStatus = response.status;
       const { id, username, fullname } = response.body.data.addedUser;
-      const persistedUser = await UsersTableTestHelper.findUserByUsername(payload.username);
-
-      expect(responseStatus).toEqual(201);
+      expect(response.statusCode).toEqual(201);
+      expect(response.body.isSuccess).toEqual(true);
+      expect(response.body.message).toEqual('User added successfully');
       expect(id).toBeDefined();
       expect(username).toEqual(payload.username);
       expect(fullname).toEqual(payload.fullname);
-      expect(persistedUser).toHaveLength(1);
     });
 
     it('should response 400 when username not available', async () => {
@@ -56,16 +54,15 @@ describe('/users endpoint', () => {
       const response = await request(app).post('/users').send(payload);
 
       // Assert
-
+      const { username } = response.body.errors;
       expect(response.statusCode).toEqual(400);
       expect(response.body.isSuccess).toEqual(false);
-      expect(response.body.errors.username).toEqual('Username is already taken');
+      expect(username).toContain('Username is already taken');
     });
 
     it('should response 400 when request payload not contain needed property', async () => {
       // Arrange
       const payload = {
-        username: 'johndoe',
       };
 
       const app = await createServer(container);
@@ -74,10 +71,12 @@ describe('/users endpoint', () => {
       const response = await request(app).post('/users').send(payload);
 
       // Assert
+      const { username, fullname, password } = response.body.errors;
       expect(response.statusCode).toEqual(400);
       expect(response.body.isSuccess).toEqual(false);
-      expect(response.body.errors.fullname[0]).toEqual('"fullname" is required');
-      expect(response.body.errors.password[0]).toEqual('"password" is required');
+      expect(username).toContain('"username" is required');
+      expect(fullname).toContain('"fullname" is required');
+      expect(password).toContain('"password" is required');
     });
 
     it('should response 400 when request payload not meet data type specification', async () => {
@@ -94,11 +93,12 @@ describe('/users endpoint', () => {
       const response = await request(app).post('/users').send(payload);
 
       // Assert
+      const { username, fullname, password } = response.body.errors;
       expect(response.statusCode).toEqual(400);
       expect(response.body.isSuccess).toEqual(false);
-      expect(response.body.errors.username[0]).toEqual('"username" must be a string');
-      expect(response.body.errors.fullname[0]).toEqual('"fullname" must be a string');
-      expect(response.body.errors.password[0]).toEqual('"password" must be a string');
+      expect(username).toContain('"username" must be a string');
+      expect(fullname).toContain('"fullname" must be a string');
+      expect(password).toContain('"password" must be a string');
     });
 
     it('should response 400 when username more than 50 characters', async () => {
@@ -115,10 +115,11 @@ describe('/users endpoint', () => {
       const response = await request(app).post('/users').send(payload);
 
       // Assert
+      const { username } = response.body.errors;
       expect(response.statusCode).toEqual(400);
       expect(response.body.isSuccess).toEqual(false);
-      expect(response.body.errors.username[0])
-        .toEqual('"username" length must be less than or equal to 50 characters long');
+      expect(username)
+        .toContain('"username" length must be less than or equal to 50 characters long');
     });
 
     it('should response 400 when username contain restricted character', async () => {
@@ -135,10 +136,11 @@ describe('/users endpoint', () => {
       const response = await request(app).post('/users').send(payload);
 
       // Assert
+      const { username } = response.body.errors;
       expect(response.statusCode).toEqual(400);
       expect(response.body.isSuccess).toEqual(false);
-      expect(response.body.errors.username[0])
-        .toEqual('"username" with value "johndoe!" fails to match the required pattern: /^[\\w]+$/');
+      expect(username)
+        .toContain('"username" with value "johndoe!" fails to match the required pattern: /^[\\w]+$/');
     });
   });
 
@@ -152,8 +154,11 @@ describe('/users endpoint', () => {
       const response = await request(app).get('/users');
 
       // Assert
+      const { users } = response.body.data;
       expect(response.statusCode).toEqual(200);
-      expect(response.body.data.users).toHaveLength(1);
+      expect(response.body.isSuccess).toEqual(true);
+      expect(response.body.message).toEqual('Users retrieved successfully');
+      expect(users).toHaveLength(1);
     });
   });
 
@@ -168,8 +173,11 @@ describe('/users endpoint', () => {
       const response = await request(app).get(`/users/${userId}`);
 
       // Assert
+      const { user } = response.body.data;
       expect(response.statusCode).toEqual(200);
-      expect(response.body.data.user.id).toEqual(userId);
+      expect(response.body.isSuccess).toEqual(true);
+      expect(response.body.message).toEqual('User retrieved successfully');
+      expect(user.id).toEqual(userId);
     });
 
     it('should response 404 when user is not found', async () => {
@@ -181,8 +189,9 @@ describe('/users endpoint', () => {
       const response = await request(app).get(`/users/${userId}`);
 
       // Assert
+      const { id } = response.body.errors;
       expect(response.statusCode).toEqual(404);
-      expect(response.body.errors.id).toEqual('User not found');
+      expect(id).toContain('User not found');
     });
   });
 });

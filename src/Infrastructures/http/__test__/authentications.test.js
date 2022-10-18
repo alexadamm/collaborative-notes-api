@@ -32,6 +32,7 @@ describe('/authentications endpoint', () => {
       const { accessToken, refreshToken } = response.body.data;
       expect(response.statusCode).toEqual(201);
       expect(response.body.isSuccess).toEqual(true);
+      expect(response.body.message).toEqual('Authentication added successfully');
       expect(accessToken).toBeDefined();
       expect(refreshToken).toBeDefined();
     });
@@ -49,9 +50,10 @@ describe('/authentications endpoint', () => {
       const response = await request(app).post('/authentications').send(payload);
 
       // Assert
+      const { message } = response.body.errors;
       expect(response.statusCode).toEqual(401);
       expect(response.body.isSuccess).toEqual(false);
-      expect(response.body.errors.message).toEqual('Wrong credentials. Invalid username or password');
+      expect(message).toContain('Wrong credentials. Invalid username or password');
     });
   });
 
@@ -68,6 +70,7 @@ describe('/authentications endpoint', () => {
       // Assert
       expect(response.statusCode).toEqual(200);
       expect(response.body.isSuccess).toEqual(true);
+      expect(response.body.message).toEqual('Authentication deleted successfully');
     });
 
     it('should response 404 if refresh token not registered in database', async () => {
@@ -78,9 +81,10 @@ describe('/authentications endpoint', () => {
       const response = await request(app).delete('/authentications').send({ refreshToken });
 
       // Assert
+      const { token } = response.body.errors;
       expect(response.statusCode).toEqual(404);
       expect(response.body.isSuccess).toEqual(false);
-      expect(response.body.errors.token).toEqual('Refresh token is not found');
+      expect(token).toContain('Refresh token is not found');
     });
 
     it('should response 400 if payload did not contain refresh token', async () => {
@@ -91,9 +95,10 @@ describe('/authentications endpoint', () => {
       const response = await request(app).delete('/authentications').send({});
 
       // Assert
+      const { refreshToken } = response.body.errors;
       expect(response.statusCode).toEqual(400);
       expect(response.body.isSuccess).toEqual(false);
-      expect(response.body.errors.refreshToken[0]).toEqual('"refreshToken" is required');
+      expect(refreshToken).toContain('"refreshToken" is required');
     });
   });
 });

@@ -11,7 +11,7 @@ const UsersValidator = {
   },
 
   validateGetUserByIdParams: (params) => {
-    const validationResult = GetUserByIdParamsSchema.validate(params);
+    const validationResult = GetUserByIdParamsSchema.validate(params, { abortEarly: false });
 
     if (validationResult.error) {
       ValidationErrorHandler(validationResult);

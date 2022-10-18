@@ -3,7 +3,7 @@ const { NotePayloadSchema, NoteByIdParamsSchema } = require('./schema');
 
 const NotesValidator = {
   validatePostNotePayload: (payload) => {
-    const validationResult = NotePayloadSchema.validate(payload);
+    const validationResult = NotePayloadSchema.validate(payload, { abortEarly: false });
 
     if (validationResult.error) {
       ValidationErrorHandler(validationResult);
@@ -11,7 +11,7 @@ const NotesValidator = {
   },
 
   validateGetNoteByIdParams: (params) => {
-    const validationResult = NoteByIdParamsSchema.validate(params);
+    const validationResult = NoteByIdParamsSchema.validate(params, { abortEarly: false });
 
     if (validationResult.error) {
       ValidationErrorHandler(validationResult);
@@ -19,7 +19,7 @@ const NotesValidator = {
   },
 
   validatePutNoteParams: (params) => {
-    const validationResult = NoteByIdParamsSchema.validate(params);
+    const validationResult = NoteByIdParamsSchema.validate(params, { abortEarly: false });
 
     if (validationResult.error) {
       ValidationErrorHandler(validationResult);
@@ -27,7 +27,7 @@ const NotesValidator = {
   },
 
   validatePutNotePayload: (payload) => {
-    const validationResult = NotePayloadSchema.validate(payload);
+    const validationResult = NotePayloadSchema.validate(payload, { abortEarly: false });
 
     if (validationResult.error) {
       ValidationErrorHandler(validationResult);

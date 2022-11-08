@@ -1,5 +1,5 @@
 const AuthenticationsTableTestHelper = require('../../../../__test__/AuthenticationsTableTestHelper');
-const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
+const InvariantError = require('../../../Commons/exceptions/InvariantError');
 const pool = require('../../database/postgres/pool');
 const AuthenticationServicePrisma = require('../AuthenticationServicePrisma');
 
@@ -27,17 +27,17 @@ describe('AuthenticationServicePrisma', () => {
   });
 
   describe('checkTokenAvailability method', () => {
-    it('should throw NotFoundError when token is not found', async () => {
+    it('should throw InvariantError when token is not found', async () => {
       // Arrange
       const expectedToken = 'refreshToken';
       const authenticationServicePrisma = new AuthenticationServicePrisma(pool);
 
       // Action and Assert
       await expect(authenticationServicePrisma.checkTokenAvailability(expectedToken))
-        .rejects.toThrowError(NotFoundError);
+        .rejects.toThrowError(InvariantError);
     });
 
-    it('should not throw NotFoundError when token is found', async () => {
+    it('should not throw InvariantError when token is found', async () => {
       // Arrange
       const expectedToken = 'refreshToken';
       await AuthenticationsTableTestHelper.addToken(expectedToken);
@@ -45,7 +45,7 @@ describe('AuthenticationServicePrisma', () => {
 
       // Action and Assert
       await expect(authenticationServicePrisma.checkTokenAvailability(expectedToken))
-        .resolves.not.toThrowError(NotFoundError);
+        .resolves.not.toThrowError(InvariantError);
     });
   });
 

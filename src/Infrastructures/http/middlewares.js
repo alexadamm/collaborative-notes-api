@@ -40,6 +40,7 @@ class ServerMiddlewares {
 
     const bearerToken = bearerHeader.split(' ')[1];
 
+    await authTokenManager.verifyAccessToken(bearerToken);
     const { id: userId, username } = await authTokenManager.decodePayload(bearerToken);
     await usersService.getUserById(userId);
 

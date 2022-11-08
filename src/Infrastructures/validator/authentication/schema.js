@@ -9,4 +9,8 @@ const DeleteAuthenticationSchema = Joi.object({
   refreshToken: Joi.string().required(),
 });
 
-module.exports = { PostAuthenticationSchema, DeleteAuthenticationSchema };
+const PutAuthenticationSchema = Joi.object({
+  refreshToken: Joi.string().required(),
+});
+
+module.exports = { PostAuthenticationSchema, DeleteAuthenticationSchema, PutAuthenticationSchema };

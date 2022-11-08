@@ -1,5 +1,6 @@
 const LoginUserUseCase = require('../../../../Applications/use_cases/LoginUserUseCase');
 const LogoutUserUseCase = require('../../../../Applications/use_cases/LogoutUserUseCase');
+const RefreshAuthenticationUseCase = require('../../../../Applications/use_cases/RefreshAuthenticationUseCase');
 
 class AuthenticationsController {
   constructor(container) {
@@ -7,6 +8,7 @@ class AuthenticationsController {
 
     this.postAuthenticationController = this.postAuthenticationController.bind(this);
     this.deleteAuthenticationController = this.deleteAuthenticationController.bind(this);
+    this.putAuthenticationController = this.putAuthenticationController.bind(this);
   }
 
   async postAuthenticationController(req, res) {
@@ -29,6 +31,19 @@ class AuthenticationsController {
     res.status(200).json({
       isSuccess: true,
       message: 'Authentication deleted successfully',
+    });
+  }
+
+  async putAuthenticationController(req, res) {
+    const payload = req.body;
+    const refreshAuthenticationUseCase = this._container
+      .getInstance(RefreshAuthenticationUseCase.name);
+    const accessToken = await refreshAuthenticationUseCase.execute(payload);
+
+    res.status(200).json({
+      isSuccess: true,
+      message: 'Access token created successfully',
+      data: { accessToken },
     });
   }
 }

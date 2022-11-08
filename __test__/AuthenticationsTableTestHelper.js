@@ -10,6 +10,10 @@ const AuthenticationsTableTestHelper = {
     return pool.Authentication.create({ data: { token } });
   },
 
+  async deleteToken(token) {
+    await pool.Authentication.delete({ where: { token } });
+  },
+
   async cleanTable() {
     await pool.Authentication.deleteMany();
   },

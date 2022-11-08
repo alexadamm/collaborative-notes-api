@@ -26,6 +26,7 @@ const GetNoteByIdUseCase = require('../Applications/use_cases/GetNoteByIdUseCase
 const GetNotesByUserIdUseCase = require('../Applications/use_cases/GetNotesByUserIdUseCase');
 const UpdateNoteUseCase = require('../Applications/use_cases/UpdateNoteUseCase');
 const DeleteNoteByIdUseCase = require('../Applications/use_cases/DeleteNoteByIdUseCase');
+const RefreshAuthenticationUseCase = require('../Applications/use_cases/RefreshAuthenticationUseCase');
 
 // creating container
 const container = createContainer();
@@ -185,6 +186,27 @@ container.register([
         {
           name: 'authenticationService',
           internal: AuthenticationService.name,
+        },
+      ],
+    },
+  },
+  {
+    key: RefreshAuthenticationUseCase.name,
+    Class: RefreshAuthenticationUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'authenticationValidator',
+          concrete: AuthenticationValidator,
+        },
+        {
+          name: 'authenticationService',
+          internal: AuthenticationService.name,
+        },
+        {
+          name: 'authenticationTokenManager',
+          internal: AuthenticationTokenManager.name,
         },
       ],
     },

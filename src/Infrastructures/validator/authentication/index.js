@@ -1,5 +1,5 @@
 const ValidationErrorHandler = require('../../../Commons/exceptions/ValidationErrorHandler');
-const { PostAuthenticationSchema, DeleteAuthenticationSchema } = require('./schema');
+const { PostAuthenticationSchema, DeleteAuthenticationSchema, PutAuthenticationSchema } = require('./schema');
 
 const AuthenticationValidator = {
   validatePostAuthenticationPayload: (payload) => {
@@ -12,6 +12,14 @@ const AuthenticationValidator = {
 
   validateDeleteAuthenticationPayload: (payload) => {
     const validationResult = DeleteAuthenticationSchema.validate(payload, { abortEarly: false });
+
+    if (validationResult.error) {
+      ValidationErrorHandler(validationResult);
+    }
+  },
+
+  validatePutAuthenticationPayload: (payload) => {
+    const validationResult = PutAuthenticationSchema.validate(payload, { abortEarly: false });
 
     if (validationResult.error) {
       ValidationErrorHandler(validationResult);

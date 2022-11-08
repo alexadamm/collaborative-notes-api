@@ -1,3 +1,4 @@
+const InvariantError = require('../../Commons/exceptions/InvariantError');
 const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 const AuthenticationService = require('../../Domains/authentications/AuthenticationService');
 
@@ -14,7 +15,7 @@ class AuthenticationServicePrisma extends AuthenticationService {
   async checkTokenAvailability(token) {
     const result = await this._pool.Authentication.findUnique({ where: { token } });
     if (!result) {
-      throw new NotFoundError({ token: ['Refresh token is not found'] });
+      throw new InvariantError({ token: ['Invalid token'] });
     }
   }
 

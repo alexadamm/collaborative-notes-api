@@ -41,9 +41,10 @@ describe('HTTP server', () => {
     const response = await request(app).post('/notes');
 
     // Assert
+    const { errors } = response.body;
     expect(response.statusCode).toEqual(401);
     expect(response.body.isSuccess).toEqual(false);
-    expect(response.body.errors.message).toEqual('No token provided');
+    expect(errors).toContain('No token provided');
   });
 
   it('should not throw AuthenticationError when token is provided', async () => {

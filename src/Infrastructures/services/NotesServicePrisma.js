@@ -32,7 +32,7 @@ class NotesServicePrisma extends NotesService {
     });
 
     if (!result) {
-      throw new NotFoundError({ noteId: ['Note not found'] });
+      throw new NotFoundError(['Note not found']);
     }
 
     return new NoteDetail({ ...result, owner: result.owner.username });
@@ -55,7 +55,7 @@ class NotesServicePrisma extends NotesService {
     });
 
     if ((note.ownerId !== userId)) {
-      throw new AuthorizationError({ message: ['You do not have access to this resource'] });
+      throw new AuthorizationError(['You do not have access to this resource']);
     }
   }
 

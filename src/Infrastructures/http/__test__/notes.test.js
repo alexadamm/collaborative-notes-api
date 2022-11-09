@@ -50,10 +50,10 @@ describe('/notes endpoint', () => {
       const response = await request(app).post('/notes').send(payload);
 
       // Assert
-      const { message } = response.body.errors;
+      const { errors } = response.body;
       expect(response.statusCode).toEqual(401);
       expect(response.body.isSuccess).toEqual(false);
-      expect(message).toContain('No token provided');
+      expect(errors).toContain('No token provided');
     });
 
     it('should response 401 when access token invalid', async () => {
@@ -69,10 +69,10 @@ describe('/notes endpoint', () => {
       const response = await request(app).post('/notes').send(payload).set('Authorization', `Bearer ${accessToken}`);
 
       // Assert
-      const { token } = response.body.errors;
+      const { errors } = response.body;
       expect(response.statusCode).toEqual(401);
       expect(response.body.isSuccess).toEqual(false);
-      expect(token).toContain('Invalid auth token');
+      expect(errors).toContain('Invalid auth token');
     });
 
     it('should response 400 when title greater than 100 long', async () => {
@@ -88,10 +88,10 @@ describe('/notes endpoint', () => {
       const response = await request(app).post('/notes').send(payload).set('Authorization', `Bearer ${accessToken}`);
 
       // Assert
-      const { title } = response.body.errors;
+      const { errors } = response.body;
       expect(response.statusCode).toEqual(400);
       expect(response.body.isSuccess).toEqual(false);
-      expect(title)
+      expect(errors)
         .toContain('"title" length must be less than or equal to 100 characters long');
     });
   });
@@ -129,10 +129,10 @@ describe('/notes endpoint', () => {
       const response = await request(app).get('/notes');
 
       // Assert
-      const { message } = response.body.errors;
+      const { errors } = response.body;
       expect(response.statusCode).toEqual(401);
       expect(response.body.isSuccess).toEqual(false);
-      expect(message).toContain('No token provided');
+      expect(errors).toContain('No token provided');
     });
   });
 
@@ -145,10 +145,10 @@ describe('/notes endpoint', () => {
     const response = await request(app).get('/notes').set('Authorization', `Bearer ${accessToken}`);
 
     // Assert
-    const { token } = response.body.errors;
+    const { errors } = response.body;
     expect(response.statusCode).toEqual(401);
     expect(response.body.isSuccess).toEqual(false);
-    expect(token).toContain('Invalid auth token');
+    expect(errors).toContain('Invalid auth token');
   });
 
   describe('when GET /notes/{noteId}', () => {
@@ -182,10 +182,10 @@ describe('/notes endpoint', () => {
       const response = await request(app).get(`/notes/${noteId}`).set('Authorization', `Bearer ${accessToken}`);
 
       // Assert
-      const { noteId: idErrors } = response.body.errors;
+      const { errors } = response.body;
       expect(response.statusCode).toEqual(404);
       expect(response.body.isSuccess).toEqual(false);
-      expect(idErrors).toContain('Note not found');
+      expect(errors).toContain('Note not found');
     });
 
     it('should return 401 when request without access token', async () => {
@@ -197,27 +197,27 @@ describe('/notes endpoint', () => {
       const response = await request(app).get(`/notes/${noteId}`);
 
       // Assert
-      const { message } = response.body.errors;
+      const { errors } = response.body;
       expect(response.statusCode).toEqual(401);
       expect(response.body.isSuccess).toEqual(false);
-      expect(message).toContain('No token provided');
+      expect(errors).toContain('No token provided');
     });
-  });
 
-  it('should return 401 when access token invalid', async () => {
-    // Arrange
-    const app = await createServer(container);
-    const accessToken = 'bearer token';
-    const noteId = '12345678-abcd-abcd-abcd-123456789012';
+    it('should return 401 when access token invalid', async () => {
+      // Arrange
+      const app = await createServer(container);
+      const accessToken = 'bearer token';
+      const noteId = '12345678-abcd-abcd-abcd-123456789012';
 
-    // Action
-    const response = await request(app).get(`/notes/${noteId}`).set('Authorization', `Bearer ${accessToken}`);
+      // Action
+      const response = await request(app).get(`/notes/${noteId}`).set('Authorization', `Bearer ${accessToken}`);
 
-    // Assert
-    const { token } = response.body.errors;
-    expect(response.statusCode).toEqual(401);
-    expect(response.body.isSuccess).toEqual(false);
-    expect(token).toContain('Invalid auth token');
+      // Assert
+      const { errors } = response.body;
+      expect(response.statusCode).toEqual(401);
+      expect(response.body.isSuccess).toEqual(false);
+      expect(errors).toContain('Invalid auth token');
+    });
   });
 
   describe('when PUT /notes/{noteId}', () => {
@@ -262,10 +262,10 @@ describe('/notes endpoint', () => {
       const response = await request(app).put(`/notes/${noteId}`).send(payload);
 
       // Assert
-      const { message } = response.body.errors;
+      const { errors } = response.body;
       expect(response.statusCode).toEqual(401);
       expect(response.body.isSuccess).toEqual(false);
-      expect(message).toContain('No token provided');
+      expect(errors).toContain('No token provided');
     });
 
     it('should return 401 when access token invalid', async () => {
@@ -282,10 +282,10 @@ describe('/notes endpoint', () => {
       const response = await request(app).put(`/notes/${noteId}`).send(payload).set('Authorization', `Bearer ${accessToken}`);
 
       // Assert
-      const { token } = response.body.errors;
+      const { errors } = response.body;
       expect(response.statusCode).toEqual(401);
       expect(response.body.isSuccess).toEqual(false);
-      expect(token).toContain('Invalid auth token');
+      expect(errors).toContain('Invalid auth token');
     });
 
     it('should return 400 when request params not meet data type specification', async () => {
@@ -298,10 +298,10 @@ describe('/notes endpoint', () => {
       const response = await request(app).put(`/notes/${noteId}`).set('Authorization', `Bearer ${accessToken}`);
 
       // Assert
-      const { noteId: idErrors } = response.body.errors;
+      const { errors } = response.body;
       expect(response.statusCode).toEqual(400);
       expect(response.body.isSuccess).toEqual(false);
-      expect(idErrors).toContain('"noteId" must be a valid GUID');
+      expect(errors).toContain('"noteId" must be a valid GUID');
     });
 
     it('should return 400 when request body not meet data type specification', async () => {
@@ -318,11 +318,11 @@ describe('/notes endpoint', () => {
       const response = await request(app).put(`/notes/${noteId}`).send(payload).set('Authorization', `Bearer ${accessToken}`);
 
       // Assert
-      const { title, content } = response.body.errors;
+      const { errors } = response.body;
       expect(response.statusCode).toEqual(400);
       expect(response.body.isSuccess).toEqual(false);
-      expect(title).toContain('"title" must be a string');
-      expect(content).toContain('"content" must be a string');
+      expect(errors).toContain('"title" must be a string');
+      expect(errors).toContain('"content" must be a string');
     });
 
     it('should return 404 when note is not found', async () => {
@@ -339,10 +339,10 @@ describe('/notes endpoint', () => {
       const response = await request(app).put(`/notes/${noteId}`).send(payload).set('Authorization', `Bearer ${accessToken}`);
 
       // Assert
-      const { noteId: idErrors } = response.body.errors;
+      const { errors } = response.body;
       expect(response.statusCode).toEqual(404);
       expect(response.body.isSuccess).toEqual(false);
-      expect(idErrors).toContain('Note not found');
+      expect(errors).toContain('Note not found');
     });
 
     it('should return 403 when try to update note that\'s not theirs', async () => {
@@ -362,10 +362,10 @@ describe('/notes endpoint', () => {
       const response = await request(app).put(`/notes/${noteId}`).send(payload).set('Authorization', `Bearer ${accessToken}`);
 
       // Assert
-      const { message } = response.body.errors;
+      const { errors } = response.body;
       expect(response.statusCode).toEqual(403);
       expect(response.body.isSuccess).toEqual(false);
-      expect(message).toContain('You do not have access to this resource');
+      expect(errors).toContain('You do not have access to this resource');
     });
   });
 
@@ -396,10 +396,10 @@ describe('/notes endpoint', () => {
       const response = await request(app).delete(`/notes/${noteId}`);
 
       // Assert
-      const { message } = response.body.errors;
+      const { errors } = response.body;
       expect(response.statusCode).toEqual(401);
       expect(response.body.isSuccess).toEqual(false);
-      expect(message).toContain('No token provided');
+      expect(errors).toContain('No token provided');
     });
 
     it('should return 401 when access token invalid', async () => {
@@ -412,10 +412,10 @@ describe('/notes endpoint', () => {
       const response = await request(app).delete(`/notes/${noteId}`).set('Authorization', `Bearer ${accessToken}`);
 
       // Assert
-      const { token } = response.body.errors;
+      const { errors } = response.body;
       expect(response.statusCode).toEqual(401);
       expect(response.body.isSuccess).toEqual(false);
-      expect(token).toContain('Invalid auth token');
+      expect(errors).toContain('Invalid auth token');
     });
 
     it('should return 400 when request params not meet data type specification', async () => {
@@ -442,10 +442,10 @@ describe('/notes endpoint', () => {
       const response = await request(app).delete(`/notes/${noteId}`).set('Authorization', `Bearer ${accessToken}`);
 
       // Assert
-      const { noteId: idErrors } = response.body.errors;
+      const { errors } = response.body;
       expect(response.statusCode).toEqual(404);
       expect(response.body.isSuccess).toEqual(false);
-      expect(idErrors).toContain('Note not found');
+      expect(errors).toContain('Note not found');
     });
 
     it('should return 403 when try to delete note that\'s not theirs', async () => {
@@ -461,10 +461,10 @@ describe('/notes endpoint', () => {
       const response = await request(app).delete(`/notes/${noteId}`).set('Authorization', `Bearer ${accessToken}`);
 
       // Assert
-      const { message } = response.body.errors;
+      const { errors } = response.body;
       expect(response.statusCode).toEqual(403);
       expect(response.body.isSuccess).toEqual(false);
-      expect(message).toContain('You do not have access to this resource');
+      expect(errors).toContain('You do not have access to this resource');
     });
   });
 });

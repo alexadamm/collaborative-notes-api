@@ -15,7 +15,7 @@ class UsersServicePrisma extends UsersService {
       .findUnique({ where: { username }, select: { id: true } });
 
     if (result) {
-      throw new InvariantError({ username: ['Username is already taken'] });
+      throw new InvariantError(['Username is already taken']);
     }
   }
 
@@ -44,7 +44,7 @@ class UsersServicePrisma extends UsersService {
     );
 
     if (!result) {
-      throw new NotFoundError({ id: ['User not found'] });
+      throw new NotFoundError(['User not found']);
     }
 
     return new AddedUser(result);
@@ -57,7 +57,7 @@ class UsersServicePrisma extends UsersService {
     });
 
     if (!user) {
-      throw new InvariantError({ username: ['User does not exist'] });
+      throw new InvariantError(['User does not exist']);
     }
 
     return user.id;
@@ -70,7 +70,7 @@ class UsersServicePrisma extends UsersService {
     });
 
     if (!user) {
-      throw new AuthenticationError({ message: ['Wrong credentials. Invalid username or password'] });
+      throw new AuthenticationError(['Wrong credentials. Invalid username or password']);
     }
 
     return user.password;

@@ -2,13 +2,12 @@ const InvariantError = require('./InvariantError');
 
 const ValidationErrorHandler = (validationResult) => {
   const errorDetails = validationResult.error.details;
-  const mappedErrors = { };
+  const errorMessage = [];
   errorDetails
     .forEach((item) => {
-      mappedErrors[item.context.label] = [];
-      mappedErrors[item.context.label].push(item.message);
+      errorMessage.push(item.message);
     });
-  throw new InvariantError(mappedErrors);
+  throw new InvariantError(errorMessage);
 };
 
 module.exports = ValidationErrorHandler;

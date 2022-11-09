@@ -35,7 +35,7 @@ class ServerMiddlewares {
     const bearerHeader = req.headers.authorization;
 
     if (typeof bearerHeader === 'undefined') {
-      throw new AuthenticationError({ message: 'No token provided' });
+      throw new AuthenticationError(['No token provided']);
     }
 
     const bearerToken = bearerHeader.split(' ')[1];

@@ -15,7 +15,7 @@ class AuthenticationServicePrisma extends AuthenticationService {
   async checkTokenAvailability(token) {
     const result = await this._pool.Authentication.findUnique({ where: { token } });
     if (!result) {
-      throw new InvariantError({ token: ['Invalid token'] });
+      throw new InvariantError(['Invalid token']);
     }
   }
 

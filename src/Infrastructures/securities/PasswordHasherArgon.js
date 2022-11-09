@@ -20,7 +20,7 @@ class PasswordhHasherArgon extends PasswordHasher {
     );
 
     if (!result) {
-      throw new AuthenticationError('Wrong credentials. Invalid username or password');
+      throw new AuthenticationError(['Wrong credentials. Invalid username or password']);
     }
   }
 }

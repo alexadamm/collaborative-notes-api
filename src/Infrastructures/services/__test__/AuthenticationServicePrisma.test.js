@@ -1,4 +1,4 @@
-const AuthenticationsTableTestHelper = require('../../../../__test__/AuthenticationsTableTestHelper');
+const AuthenticationsTableTestHelper = require('../../../../tests/AuthenticationsTableTestHelper');
 const InvariantError = require('../../../Commons/exceptions/InvariantError');
 const pool = require('../../database/postgres/pool');
 const AuthenticationServicePrisma = require('../AuthenticationServicePrisma');

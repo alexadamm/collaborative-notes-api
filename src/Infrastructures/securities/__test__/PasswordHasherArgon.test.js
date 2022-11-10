@@ -1,6 +1,6 @@
 const argon2 = require('argon2');
 
-const PasswordHasherHelper = require('../../../../__test__/PasswordHasherHelper');
+const PasswordHasherHelper = require('../../../../tests/PasswordHasherHelper');
 const AuthenticationError = require('../../../Commons/exceptions/AuthenticationError');
 const PasswordHasherArgon = require('../PasswordHasherArgon');
 

@@ -1,4 +1,4 @@
-const UsersTableTestHelper = require('../../../../__test__/UsersTableTestHelper');
+const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 const InvariantError = require('../../../Commons/exceptions/InvariantError');
 const AddedUser = require('../../../Domains/users/entities/AddedUser');

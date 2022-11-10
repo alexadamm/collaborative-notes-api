@@ -1,8 +1,8 @@
 const request = require('supertest');
 const createServer = require('../createServer');
 const container = require('../../container');
-const ServerTestHelper = require('../../../../__test__/ServerTestHelper');
-const DatabaseTestHelper = require('../../../../__test__/DatabaseTestHelper');
+const ServerTestHelper = require('../../../../tests/ServerTestHelper');
+const DatabaseTestHelper = require('../../../../tests/DatabaseTestHelper');
 
 describe('HTTP server', () => {
   afterEach(async () => {

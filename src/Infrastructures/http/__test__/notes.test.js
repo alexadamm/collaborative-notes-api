@@ -1,9 +1,9 @@
 const request = require('supertest');
-const ServerTestHelper = require('../../../../__test__/ServerTestHelper');
+const ServerTestHelper = require('../../../../tests/ServerTestHelper');
 const createServer = require('../createServer');
 const container = require('../../container');
-const DatabaseTestHelper = require('../../../../__test__/DatabaseTestHelper');
-const NotesTableTestHelper = require('../../../../__test__/NotesTableTestHelper');
+const DatabaseTestHelper = require('../../../../tests/DatabaseTestHelper');
+const NotesTableTestHelper = require('../../../../tests/NotesTableTestHelper');
 
 describe('/notes endpoint', () => {
   afterEach(async () => {

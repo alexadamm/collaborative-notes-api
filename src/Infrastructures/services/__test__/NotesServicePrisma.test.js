@@ -1,5 +1,5 @@
-const NotesTableTestHelper = require('../../../../__test__/NotesTableTestHelper');
-const UsersTableTestHelper = require('../../../../__test__/UsersTableTestHelper');
+const NotesTableTestHelper = require('../../../../tests/NotesTableTestHelper');
+const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 const NoteDetail = require('../../../Domains/notes/entities/NoteDetail');
 const NewNote = require('../../../Domains/notes/entities/NewNote');

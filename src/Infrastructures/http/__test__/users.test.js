@@ -1,7 +1,7 @@
 const request = require('supertest');
-const DatabaseTestHelper = require('../../../../__test__/DatabaseTestHelper');
+const DatabaseTestHelper = require('../../../../tests/DatabaseTestHelper');
 
-const UsersTableTestHelper = require('../../../../__test__/UsersTableTestHelper');
+const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const container = require('../../container');
 const pool = require('../../database/postgres/pool');
 const createServer = require('../createServer');

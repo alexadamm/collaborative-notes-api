@@ -9,7 +9,10 @@ class AddUserUseCase {
 
   async execute(payload) {
     this.usersValidator.validatePostUserPayload(payload);
-    const addUser = new AddUser(payload);
+    const addUser = new AddUser({
+      ...payload,
+      username: payload.username.toLowerCase(),
+    });
     await this.usersService.verifyAvailableUsername(addUser.username);
     addUser.password = await this.passwordHasher.hash(addUser.password);
     return this.usersService.addUser(addUser);

@@ -20,13 +20,15 @@ class LoginUserUseCase {
 
     const { username, password } = payload;
 
-    const encryptedPassword = await this.usersService.getPasswordByUsername(username);
+    const encryptedPassword = await this.usersService.getPasswordByUsername(username.toLowerCase());
     await this.passwordHasher.compare(password, encryptedPassword);
 
-    const id = await this.usersService.getIdByUsername(username);
+    const id = await this.usersService.getIdByUsername(username.toLowerCase());
 
-    const accessToken = await this.authenticationTokenManager.createAccessToken({ id, username });
-    const refreshToken = await this.authenticationTokenManager.createRefreshToken({ id, username });
+    const accessToken = await this.authenticationTokenManager
+      .createAccessToken({ id, username: username.toLowerCase() });
+    const refreshToken = await this.authenticationTokenManager
+      .createRefreshToken({ id, username: username.toLowerCase() });
 
     await this.authenticationService.addToken(refreshToken);
 

@@ -27,6 +27,10 @@ const GetNotesByUserIdUseCase = require('../Applications/use_cases/GetNotesByUse
 const UpdateNoteUseCase = require('../Applications/use_cases/UpdateNoteUseCase');
 const DeleteNoteByIdUseCase = require('../Applications/use_cases/DeleteNoteByIdUseCase');
 const RefreshAuthenticationUseCase = require('../Applications/use_cases/RefreshAuthenticationUseCase');
+const AddCollaborationUseCase = require('../Applications/use_cases/AddCollaborationUseCase');
+const CollaborationsService = require('../Domains/collaborations/CollaborationsService');
+const CollaborationsServicePrisma = require('./services/CollaborationsServicePrisma');
+const CollaborationsValidator = require('./validator/collaborations');
 
 // creating container
 const container = createContainer();
@@ -59,6 +63,17 @@ container.register([
   {
     key: NotesService.name,
     Class: NotesServicePrisma,
+    parameter: {
+      dependencies: [
+        {
+          concrete: pool,
+        },
+      ],
+    },
+  },
+  {
+    key: CollaborationsService.name,
+    Class: CollaborationsServicePrisma,
     parameter: {
       dependencies: [
         {
@@ -218,14 +233,6 @@ container.register([
       injectType: 'destructuring',
       dependencies: [
         {
-          name: 'authenticationTokenManager',
-          internal: AuthenticationTokenManager.name,
-        },
-        {
-          name: 'usersService',
-          internal: UsersService.name,
-        },
-        {
           name: 'notesValidator',
           concrete: NotesValidator,
         },
@@ -296,6 +303,31 @@ container.register([
         {
           name: 'notesService',
           internal: NotesService.name,
+        },
+      ],
+    },
+  },
+  {
+    key: AddCollaborationUseCase.name,
+    Class: AddCollaborationUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'usersService',
+          internal: UsersService.name,
+        },
+        {
+          name: 'collaborationsValidator',
+          concrete: CollaborationsValidator,
+        },
+        {
+          name: 'notesService',
+          internal: NotesService.name,
+        },
+        {
+          name: 'collaborationsService',
+          internal: CollaborationsService.name,
         },
       ],
     },

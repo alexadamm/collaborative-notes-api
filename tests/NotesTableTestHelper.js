@@ -6,14 +6,25 @@ const NotesTableTestHelper = {
     return pool.Note.findMany({ where: { ownerId } });
   },
 
-  async addNote({ title = 'A title', content = 'lorem ipsum dolor sit amet', ownerId }) {
-    const { id } = await pool.Note.create({
+  async addNote({
+    id, title = 'A title', content = 'lorem ipsum dolor sit amet', ownerId,
+  }) {
+    if (id) {
+      await pool.Note.create({
+        data: {
+          id, title, content, ownerId,
+        },
+        select: { id: true },
+      });
+      return id;
+    }
+    const { id: noteId } = await pool.Note.create({
       data: {
         title, content, ownerId,
       },
       select: { id: true },
     });
-    return id;
+    return noteId;
   },
 
   async cleanTable() {

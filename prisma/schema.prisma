@@ -8,11 +8,12 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid()) @db.Uuid
-  username String @unique
-  password String
-  fullname String
-  notes    Note[]
+  id             String          @id @default(uuid()) @db.Uuid
+  username       String          @unique
+  password       String
+  fullname       String
+  notes          Note[]
+  collaborations Collaboration[]
 
   @@map("users")
 }
@@ -24,13 +25,24 @@ model Authentication {
 }
 
 model Note {
-  id        String   @id @default(uuid()) @db.Uuid
-  owner     User?   @relation(fields: [ownerId], references: [id])
-  ownerId   String   @map("owner_id") @db.Uuid
-  title     String?
-  content   String?
-  updatedAt DateTime @updatedAt @map("updated_at")
-  createdAt DateTime @default(now())@map("created_at")
+  id             String          @id @default(uuid()) @db.Uuid
+  owner          User?           @relation(fields: [ownerId], references: [id])
+  ownerId        String          @map("owner_id") @db.Uuid
+  title          String?
+  content        String?
+  updatedAt      DateTime        @updatedAt @map("updated_at")
+  createdAt      DateTime        @default(now()) @map("created_at")
+  collaborations Collaboration[]
 
   @@map("notes")
+}
+
+model Collaboration {
+  id     String @id @default(uuid()) @db.Uuid
+  note   Note?  @relation(fields: [noteId], references: [id])
+  noteId String @map("note_id") @db.Uuid
+  user   User?  @relation(fields: [userId], references: [id])
+  userId String @map("user_id") @db.Uuid
+
+  @@map("collaborations")
 }

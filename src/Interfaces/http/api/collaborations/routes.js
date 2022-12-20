@@ -7,6 +7,7 @@ const collaborations = (container) => {
   const collaborationsController = new CollaborationsController(container);
 
   collaborationsRouter.post('/:noteId/collaborations', ServerMiddlewares.authenticationHandler, collaborationsController.postCollaborationController);
+  collaborationsRouter.delete('/:noteId/collaborations', ServerMiddlewares.authenticationHandler, collaborationsController.deleteCollaborationController);
 
   return collaborationsRouter;
 };

@@ -31,6 +31,7 @@ const AddCollaborationUseCase = require('../Applications/use_cases/AddCollaborat
 const CollaborationsService = require('../Domains/collaborations/CollaborationsService');
 const CollaborationsServicePrisma = require('./services/CollaborationsServicePrisma');
 const CollaborationsValidator = require('./validator/collaborations');
+const DeleteCollaborationUseCase = require('../Applications/use_cases/DeleteCollaborationUseCase');
 
 // creating container
 const container = createContainer();
@@ -310,6 +311,31 @@ container.register([
   {
     key: AddCollaborationUseCase.name,
     Class: AddCollaborationUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'usersService',
+          internal: UsersService.name,
+        },
+        {
+          name: 'collaborationsValidator',
+          concrete: CollaborationsValidator,
+        },
+        {
+          name: 'notesService',
+          internal: NotesService.name,
+        },
+        {
+          name: 'collaborationsService',
+          internal: CollaborationsService.name,
+        },
+      ],
+    },
+  },
+  {
+    key: DeleteCollaborationUseCase.name,
+    Class: DeleteCollaborationUseCase,
     parameter: {
       injectType: 'destructuring',
       dependencies: [

@@ -17,6 +17,23 @@ const CollaborationsValidator = {
       ValidationErrorHandler(validationResult);
     }
   },
+
+  validateDeleteCollaborationParams: (payload) => {
+    const validationResult = CollaborationParamsSchema.validate(payload, { abortEarly: false });
+
+    if (validationResult.error) {
+      ValidationErrorHandler(validationResult);
+    }
+  },
+
+  validateDeleteCollaborationPayload: (payload) => {
+    const validationResult = CollaborationPayloadSchema.validate(payload, { abortEarly: false });
+
+    if (validationResult.error) {
+      ValidationErrorHandler(validationResult);
+    }
+  },
+
 };
 
 module.exports = CollaborationsValidator;

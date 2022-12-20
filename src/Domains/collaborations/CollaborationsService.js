@@ -3,11 +3,11 @@ class CollaborationsService {
     throw new Error('COLLABORATION_SERVICE.METHOD_NOT_IMPLEMENTED');
   }
 
-  async deleteCollaboration(noteId, userId) {
+  async getCollaborationId(noteId, userId) {
     throw new Error('COLLABORATION_SERVICE.METHOD_NOT_IMPLEMENTED');
   }
 
-  async verifyCollaborator(noteId, userId) {
+  async deleteCollaborationById(collaborationId) {
     throw new Error('COLLABORATION_SERVICE.METHOD_NOT_IMPLEMENTED');
   }
 }

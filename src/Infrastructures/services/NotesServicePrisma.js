@@ -38,9 +38,21 @@ class NotesServicePrisma extends NotesService {
     return new NoteDetail({ ...result, owner: result.owner.username });
   }
 
-  async getAllNotes(ownerId) {
+  async getAllNotes(userId) {
     const notes = await this._pool.Note.findMany(
-      { where: { ownerId }, include: { owner: true }, orderBy: { createdAt: 'desc' } },
+      {
+        where: {
+          OR: [{ ownerId: userId }, {
+            collaborations: {
+              some: {
+                userId,
+              },
+            },
+          }],
+        },
+        include: { owner: true },
+        orderBy: { updatedAt: 'desc' },
+      },
     );
 
     return notes.map((note) => new NoteDetail({ ...note, owner: note.owner.username }));

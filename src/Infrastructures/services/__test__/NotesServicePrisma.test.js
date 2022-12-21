@@ -6,6 +6,8 @@ const NewNote = require('../../../Domains/notes/entities/NewNote');
 const pool = require('../../database/postgres/pool');
 const NotesServicePrisma = require('../NotesServicePrisma');
 const AuthorizationError = require('../../../Commons/exceptions/AuthorizationError');
+const CollaborationsTableTestHelper = require('../../../../tests/CollaborationsTableTestHelper');
+const DatabaseTestHelper = require('../../../../tests/DatabaseTestHelper');
 
 describe('NotesServicePrisma', () => {
   beforeEach(async () => {
@@ -14,8 +16,7 @@ describe('NotesServicePrisma', () => {
     );
   });
   afterEach(async () => {
-    await NotesTableTestHelper.cleanTable();
-    await UsersTableTestHelper.cleanTable();
+    await DatabaseTestHelper.cleanTable();
   });
   describe('addNote method', () => {
     it('should add note to the database', async () => {
@@ -91,19 +92,35 @@ describe('NotesServicePrisma', () => {
   });
 
   describe('getAllNotes method', () => {
-    it('should return all notes that owned by the user', async () => {
+    it('should return all notes that owned by the user and collaborated with user', async () => {
       // Arrange
+      await UsersTableTestHelper.addUser(
+        { id: '12345678-abcd-abcd-abcd-123456789010', username: 'foo' },
+      );
       const ownerId = '12345678-abcd-abcd-abcd-123456789012';
+      const ownerId2 = '12345678-abcd-abcd-abcd-123456789010';
       const notesServicePrisma = new NotesServicePrisma(pool);
       await NotesTableTestHelper.addNote({ ownerId, title: 'A' });
       await NotesTableTestHelper.addNote({ ownerId, title: 'B' });
       await NotesTableTestHelper.addNote({ ownerId, title: 'C' });
+      const noteId = await NotesTableTestHelper.addNote({
+        ownerId: ownerId2,
+        title: 'D',
+      });
+      await NotesTableTestHelper.addNote({
+        ownerId: ownerId2,
+        title: 'E',
+      });
+      await CollaborationsTableTestHelper.addCollaboration({
+        noteId,
+        userId: ownerId,
+      });
 
       // Action
       const notes = await notesServicePrisma.getAllNotes(ownerId);
 
       // Assert
-      expect(notes).toHaveLength(3);
+      expect(notes).toHaveLength(4);
     });
   });
 

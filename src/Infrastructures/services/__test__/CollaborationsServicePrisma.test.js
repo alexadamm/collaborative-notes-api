@@ -2,6 +2,7 @@ const CollaborationsTableTestHelper = require('../../../../tests/CollaborationsT
 const DatabaseTestHelper = require('../../../../tests/DatabaseTestHelper');
 const NotesTableTestHelper = require('../../../../tests/NotesTableTestHelper');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
+const AuthorizationError = require('../../../Commons/exceptions/AuthorizationError');
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 const CollaborationDetail = require('../../../Domains/collaborations/entities/CollaborationDetail');
 const NewCollaboration = require('../../../Domains/collaborations/entities/NewCollaboration');
@@ -56,6 +57,62 @@ describe('CollaborationsServicePrisma', () => {
       expect(addedCollaboration).toBeInstanceOf(CollaborationDetail);
       expect(addedCollaboration.noteId).toEqual(newCollaboration.noteId);
       expect(addedCollaboration.username).toEqual('johndoe');
+    });
+  });
+
+  describe('verifyCollaborator method', () => {
+    it('should not throw AuthorizationError when collaboration is a collaborator', async () => {
+      // Arrange
+      const newCollaboration = new NewCollaboration({
+        noteId: '12345678-abcd-abcd-abcd-123456789010',
+        userId: '12345678-abcd-abcd-abcd-123456789012',
+      });
+      const collaborationsService = new CollaborationsServicePrisma(pool);
+      await CollaborationsTableTestHelper.addCollaboration({ ...newCollaboration });
+
+      // Action & Assert
+      await expect(collaborationsService.verifyCollaborator(newCollaboration))
+        .resolves.not.toThrow(AuthorizationError);
+    });
+
+    it('should throw AuthorizationError when collaboration user isn\'t a collaborator', async () => {
+      // Arrange
+      const newCollaboration = new NewCollaboration({
+        noteId: '12345678-abcd-abcd-abcd-123456789010',
+        userId: '12345678-abcd-abcd-abcd-123456789012',
+      });
+      const collaborationsService = new CollaborationsServicePrisma(pool);
+
+      // Action & Assert
+      await expect(collaborationsService.verifyCollaborator(newCollaboration))
+        .rejects.toThrow(AuthorizationError);
+    });
+  });
+
+  describe('getCollaborators method', () => {
+    it('should return a list of collaborators correctly', async () => {
+      // Arrange
+      const user1 = { id: '12345678-abcd-abcd-abcd-123456789011', username: 'foo' };
+      const user2 = { id: '12345678-abcd-abcd-abcd-123456789013', username: 'bar' };
+      await UsersTableTestHelper.addUser(user1);
+      await UsersTableTestHelper.addUser(user2);
+      await CollaborationsTableTestHelper.addCollaboration({
+        noteId: '12345678-abcd-abcd-abcd-123456789010',
+        userId: '12345678-abcd-abcd-abcd-123456789011',
+      });
+      await CollaborationsTableTestHelper.addCollaboration({
+        noteId: '12345678-abcd-abcd-abcd-123456789010',
+        userId: '12345678-abcd-abcd-abcd-123456789013',
+      });
+      const collaborationsService = new CollaborationsServicePrisma(pool);
+
+      // Action
+      const collaborators = await collaborationsService.getCollaborators('12345678-abcd-abcd-abcd-123456789010');
+
+      // Assert
+      expect(collaborators).toHaveLength(2);
+      expect(collaborators).toContainEqual(user1);
+      expect(collaborators).toContainEqual(user2);
     });
   });
 

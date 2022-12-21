@@ -1,3 +1,4 @@
+const AuthorizationError = require('../../Commons/exceptions/AuthorizationError');
 const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 const CollaborationsService = require('../../Domains/collaborations/CollaborationsService');
 const CollaborationDetail = require('../../Domains/collaborations/entities/CollaborationDetail');
@@ -19,6 +20,31 @@ class CollaborationsServicePrisma extends CollaborationsService {
     });
 
     return new CollaborationDetail({ ...collaboration, username: collaboration.user.username });
+  }
+
+  async verifyCollaborator(newCollaborator) {
+    const result = await this.pool.Collaboration.findUnique({
+      where: {
+        noteId_userId: newCollaborator,
+      },
+    });
+
+    if (!result) {
+      throw new AuthorizationError('You are not authorized to access this resource');
+    }
+  }
+
+  async getCollaborators(noteId) {
+    const collaborations = await this.pool.Collaboration.findMany({
+      where: { noteId },
+      include: {
+        user: {
+          select: { username: true, id: true },
+        },
+      },
+    });
+
+    return collaborations.map((collaboration) => collaboration.user);
   }
 
   async getCollaborationId(newCollaboration) {

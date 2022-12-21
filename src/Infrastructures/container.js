@@ -258,6 +258,10 @@ container.register([
           name: 'notesValidator',
           concrete: NotesValidator,
         },
+        {
+          name: 'collaborationsService',
+          internal: CollaborationsService.name,
+        },
       ],
     },
   },
@@ -287,6 +291,10 @@ container.register([
         {
           name: 'notesService',
           internal: NotesService.name,
+        },
+        {
+          name: 'collaborationsService',
+          internal: CollaborationsService.name,
         },
       ],
     },

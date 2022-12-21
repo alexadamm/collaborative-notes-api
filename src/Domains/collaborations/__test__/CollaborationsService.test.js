@@ -7,6 +7,8 @@ describe('CollaborationsService interface', () => {
 
     // Action and Assert
     expect(collaborationsService.addCollaboration('', '')).rejects.toThrowError('COLLABORATION_SERVICE.METHOD_NOT_IMPLEMENTED');
+    expect(collaborationsService.verifyCollaborator('', '')).rejects.toThrowError('COLLABORATION_SERVICE.METHOD_NOT_IMPLEMENTED');
+    expect(collaborationsService.getCollaborators('')).rejects.toThrowError('COLLABORATION_SERVICE.METHOD_NOT_IMPLEMENTED');
     expect(collaborationsService.getCollaborationId('', '')).rejects.toThrowError('COLLABORATION_SERVICE.METHOD_NOT_IMPLEMENTED');
     expect(collaborationsService.deleteCollaborationById('')).rejects.toThrowError('COLLABORATION_SERVICE.METHOD_NOT_IMPLEMENTED');
   });

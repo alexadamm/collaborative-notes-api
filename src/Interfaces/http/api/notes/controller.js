@@ -41,8 +41,9 @@ class NotesController {
   }
 
   async getNoteByIdController(req, res) {
+    const { auth: { userId } } = req;
     const getNoteByIdUseCase = this._container.getInstance(GetNoteByIdUseCase.name);
-    const note = await getNoteByIdUseCase.execute(req.params);
+    const note = await getNoteByIdUseCase.execute(req.params, userId);
 
     res.status(200).send({
       isSuccess: true,

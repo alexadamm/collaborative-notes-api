@@ -3,6 +3,14 @@ class CollaborationsService {
     throw new Error('COLLABORATION_SERVICE.METHOD_NOT_IMPLEMENTED');
   }
 
+  async verifyCollaborator(noteId, userId) {
+    throw new Error('COLLABORATION_SERVICE.METHOD_NOT_IMPLEMENTED');
+  }
+
+  async getCollaborators(noteId) {
+    throw new Error('COLLABORATION_SERVICE.METHOD_NOT_IMPLEMENTED');
+  }
+
   async getCollaborationId(noteId, userId) {
     throw new Error('COLLABORATION_SERVICE.METHOD_NOT_IMPLEMENTED');
   }

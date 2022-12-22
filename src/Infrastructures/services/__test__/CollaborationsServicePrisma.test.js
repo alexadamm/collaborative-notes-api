@@ -3,6 +3,7 @@ const DatabaseTestHelper = require('../../../../tests/DatabaseTestHelper');
 const NotesTableTestHelper = require('../../../../tests/NotesTableTestHelper');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const AuthorizationError = require('../../../Commons/exceptions/AuthorizationError');
+const InvariantError = require('../../../Commons/exceptions/InvariantError');
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 const CollaborationDetail = require('../../../Domains/collaborations/entities/CollaborationDetail');
 const NewCollaboration = require('../../../Domains/collaborations/entities/NewCollaboration');
@@ -57,6 +58,20 @@ describe('CollaborationsServicePrisma', () => {
       expect(addedCollaboration).toBeInstanceOf(CollaborationDetail);
       expect(addedCollaboration.noteId).toEqual(newCollaboration.noteId);
       expect(addedCollaboration.username).toEqual('johndoe');
+    });
+
+    it('should throw InvariantError when collaboration is already added', async () => {
+      // Arrange
+      const newCollaboration = new NewCollaboration({
+        noteId: '12345678-abcd-abcd-abcd-123456789010',
+        userId: '12345678-abcd-abcd-abcd-123456789012',
+      });
+      const collaborationsService = new CollaborationsServicePrisma(pool);
+      await CollaborationsTableTestHelper.addCollaboration({ ...newCollaboration });
+
+      // Action & Assert
+      await expect(collaborationsService.addCollaboration(newCollaboration))
+        .rejects.toThrow(InvariantError);
     });
   });
 

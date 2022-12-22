@@ -1,4 +1,5 @@
 const AuthorizationError = require('../../Commons/exceptions/AuthorizationError');
+const InvariantError = require('../../Commons/exceptions/InvariantError');
 const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 const CollaborationsService = require('../../Domains/collaborations/CollaborationsService');
 const CollaborationDetail = require('../../Domains/collaborations/entities/CollaborationDetail');
@@ -10,16 +11,19 @@ class CollaborationsServicePrisma extends CollaborationsService {
   }
 
   async addCollaboration(newCollaboration) {
-    const collaboration = await this.pool.Collaboration.create({
-      data: newCollaboration,
-      include: {
-        user: {
-          select: { username: true },
+    try {
+      const result = await this.pool.Collaboration.create({
+        data: newCollaboration,
+        include: {
+          user: {
+            select: { username: true },
+          },
         },
-      },
-    });
-
-    return new CollaborationDetail({ ...collaboration, username: collaboration.user.username });
+      });
+      return new CollaborationDetail({ ...result, username: result.user.username });
+    } catch (error) {
+      throw new InvariantError('Collaboration is already exist');
+    }
   }
 
   async verifyCollaborator(newCollaborator) {

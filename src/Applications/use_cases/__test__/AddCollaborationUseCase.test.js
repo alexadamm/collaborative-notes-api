@@ -1,3 +1,4 @@
+const InvariantError = require('../../../Commons/exceptions/InvariantError');
 const CollaborationsService = require('../../../Domains/collaborations/CollaborationsService');
 const CollaborationDetail = require('../../../Domains/collaborations/entities/CollaborationDetail');
 const NewCollaboration = require('../../../Domains/collaborations/entities/NewCollaboration');
@@ -69,5 +70,48 @@ describe('AddCollaborationUseCase', () => {
     expect(mockUsersService.getIdByUsername).toBeCalledWith(useCasePayload.username);
     expect(mockCollaborationsService.addCollaboration)
       .toBeCalledWith(new NewCollaboration({ userId, noteId: useCaseParams.noteId }));
+  });
+
+  it('should throw InvariantError when try to add his/herself as collaborator', async () => {
+    // Arrange
+    const useCasePayload = {
+      username: 'johndoe',
+    };
+
+    const useCaseParams = {
+      noteId: 'note-123',
+    };
+
+    const ownerId = 'user-123';
+    const userId = 'user-123';
+
+    const mockCollaborationsValidator = CollaborationsValidator;
+    const mockCollaborationsService = new CollaborationsService();
+    const mockUsersService = new UsersService();
+    const mockNotesService = new NotesService();
+
+    mockCollaborationsValidator.validatePostCollaborationPayload = jest.fn()
+      .mockImplementation(() => undefined);
+    mockCollaborationsValidator.validatePostCollaborationParams = jest.fn()
+      .mockImplementation(() => undefined);
+    mockNotesService.getNoteById = jest.fn()
+      .mockImplementation(() => Promise.resolve());
+    mockUsersService.getUserById = jest.fn()
+      .mockImplementation(() => Promise.resolve());
+    mockNotesService.verifyNoteOwner = jest.fn()
+      .mockImplementation(() => Promise.resolve());
+    mockUsersService.getIdByUsername = jest.fn()
+      .mockImplementation(() => Promise.resolve(userId));
+
+    const addCollaborationUseCase = new AddCollaborationUseCase({
+      collaborationsValidator: mockCollaborationsValidator,
+      collaborationsService: mockCollaborationsService,
+      usersService: mockUsersService,
+      notesService: mockNotesService,
+    });
+
+    // Action and Assert
+    await expect(addCollaborationUseCase.execute(useCaseParams, useCasePayload, ownerId))
+      .rejects.toThrow(InvariantError);
   });
 });

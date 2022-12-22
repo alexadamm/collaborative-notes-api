@@ -1,3 +1,4 @@
+const InvariantError = require('../../Commons/exceptions/InvariantError');
 const NewCollaboration = require('../../Domains/collaborations/entities/NewCollaboration');
 
 class AddCollaborationUseCase {
@@ -20,6 +21,9 @@ class AddCollaborationUseCase {
     await this.usersService.getUserById(userId);
     await this.notesService.verifyNoteOwner(userId, params.noteId);
     const id = await this.usersService.getIdByUsername(payload.username);
+    if (id === userId) {
+      throw new InvariantError('You cannot add yourself as a collaborator');
+    }
     const newCollaboration = new NewCollaboration({ userId: id, ...params });
     return this.collaborationsService.addCollaboration(newCollaboration);
   }

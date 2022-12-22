@@ -84,6 +84,88 @@ describe('/notes/{noteId}/collaborations endpoint', () => {
       expect(errors).toContain('You do not have access to this resource');
     });
 
+    it('should response 400 when user is not exist', async () => {
+      // Arrange
+      const payload = {
+        username: 'foo',
+      };
+      const app = await createServer(container);
+      const { accessToken, userId: ownerId } = await ServerTestHelper.newUser({ request, app }, { username: 'johndoe' });
+      const noteId = await NotesTableTestHelper.addNote({ ownerId });
+
+      // Action
+      const response = await request(app).post(`/notes/${noteId}/collaborations`).send(payload).set('Authorization', `Bearer ${accessToken}`);
+
+      // Assert
+      const { errors } = response.body;
+      expect(response.statusCode).toEqual(400);
+      expect(response.body.isSuccess).toEqual(false);
+      expect(errors).toContain('User does not exist');
+    });
+
+    it('should response 400 when collaboration is added already', async () => {
+      // Arrange
+      const username = 'foo';
+      const payload = {
+        username,
+      };
+      const app = await createServer(container);
+      const { accessToken, userId: ownerId } = await ServerTestHelper.newUser({ request, app }, { username: 'johndoe' });
+      const { userId } = await ServerTestHelper.newUser({ request, app }, { username });
+      const noteId = await NotesTableTestHelper.addNote({ ownerId });
+      await CollaborationsTableTestHelper.addCollaboration({ noteId, userId });
+
+      // Action
+      const response = await request(app).post(`/notes/${noteId}/collaborations`).send(payload).set('Authorization', `Bearer ${accessToken}`);
+
+      // Assert
+      const { errors } = response.body;
+      expect(response.statusCode).toEqual(400);
+      expect(response.body.isSuccess).toEqual(false);
+      expect(errors).toContain('Collaboration is already exist');
+    });
+
+    it('should response 400 when try to add his/herself as collaborator', async () => {
+      // Arrange
+      const username = 'johndoe';
+      const payload = {
+        username,
+      };
+      const app = await createServer(container);
+      const { accessToken, userId: ownerId } = await ServerTestHelper.newUser({ request, app }, { username: 'johndoe' });
+      const noteId = await NotesTableTestHelper.addNote({ ownerId });
+      await CollaborationsTableTestHelper.addCollaboration({ noteId, userId: ownerId });
+
+      // Action
+      const response = await request(app).post(`/notes/${noteId}/collaborations`).send(payload).set('Authorization', `Bearer ${accessToken}`);
+
+      // Assert
+      const { errors } = response.body;
+      expect(response.statusCode).toEqual(400);
+      expect(response.body.isSuccess).toEqual(false);
+      expect(errors).toContain('You cannot add yourself as a collaborator');
+    });
+
+    it('should response 404 when note is not exist', async () => {
+      // Arrange
+      const payload = {
+        username: 'foo',
+      };
+      const app = await createServer(container);
+      const { accessToken } = await ServerTestHelper.newUser({ request, app }, { username: 'johndoe' });
+      await ServerTestHelper.newUser({ request, app }, { username: 'foo' });
+
+      // Action
+      const response = await request(app).post('/notes/12345678-abcd-abcd-abcd-123456789012/collaborations')
+        .send(payload).set('Authorization', `Bearer ${accessToken}`);
+
+      // Assert
+      const { errors } = response.body;
+      expect(response.statusCode).toEqual(404);
+      expect(response.body.isSuccess).toEqual(false);
+      expect(errors).toContain('Note not found');
+    });
+
     it('should response 400 when request payload not contain needed property', async () => {
       // Arrange
       const payload = {};

@@ -14,11 +14,11 @@ class ServerMiddlewares {
   }
 
   static errorHandler(err, req, res, next) {
-    if (err instanceof ClientError || err.statusCode < 500) {
+    if (err instanceof ClientError) {
       return res.status(err.statusCode).send({
         isSuccess: false,
         status: err.status,
-        errors: (err.errors !== undefined) ? err.errors : [err.message],
+        errors: err.errors,
       });
     }
     return res.status(500).send({
